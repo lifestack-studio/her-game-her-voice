@@ -35,7 +35,8 @@ export function PresentedBy() {
           id="presented-by-heading"
           className="font-display text-2xl font-semibold text-primary sm:text-3xl"
         >
-          Her Game, Her Voice is brought to you by lifestack
+          Her Game, Her Voice is brought to you by{" "}
+          <span className="font-sans font-semibold">lifestack</span>
         </h2>
         <p className="max-w-xl text-foreground/80">
           Optimise your game, on and off the ice — a word from our presenting partner.
