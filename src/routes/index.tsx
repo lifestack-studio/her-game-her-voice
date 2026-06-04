@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
+import brandBanner from "@/assets/brand-banner.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { LazyIframe } from "@/components/lazy-iframe";
 import { SPOTIFY_SHOW_URL, SPOTIFY_EMBED_URL } from "@/lib/site";
@@ -63,6 +64,18 @@ function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Brand banner strip */}
+      <section className="bg-[#f4dce9]">
+        <img
+          src={brandBanner.url}
+          alt="Her Game, Her Voice — Leading the conversation in Womens Ice Hockey"
+          width={1900}
+          height={628}
+          loading="lazy"
+          className="mx-auto h-auto w-full max-w-[1900px]"
+        />
       </section>
 
       {/* Mission statement */}

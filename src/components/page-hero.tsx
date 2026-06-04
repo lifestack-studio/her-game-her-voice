@@ -1,4 +1,4 @@
-import iceTexture from "@/assets/ice-texture.jpg";
+import brandBanner from "@/assets/brand-banner.png.asset.json";
 
 interface PageHeroProps {
   title: string;
@@ -6,18 +6,18 @@ interface PageHeroProps {
   children?: React.ReactNode;
 }
 
-/** Compact hero used on interior pages: ice texture under a navy overlay. */
+/** Compact hero used on interior pages: brand banner under a navy overlay. */
 export function PageHero({ title, subtitle, children }: PageHeroProps) {
   return (
     <section className="relative overflow-hidden bg-navy-gradient">
       <img
-        src={iceTexture}
+        src={brandBanner.url}
         alt=""
         aria-hidden="true"
         loading="lazy"
-        width={1600}
-        height={900}
-        className="absolute inset-0 h-full w-full object-cover opacity-15 mix-blend-screen"
+        width={1900}
+        height={628}
+        className="absolute inset-0 h-full w-full object-cover object-left-top opacity-[0.18] mix-blend-screen"
       />
       <div className="absolute -left-16 top-1/2 hidden h-64 w-64 -translate-y-1/2 rounded-full border-[14px] border-accent/30 md:block" />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 md:py-28">
