@@ -50,6 +50,23 @@ const pillars = [
   },
 ];
 
+const galleryPhotos = [
+  {
+    src: studioBranding.url,
+    alt: "Emma Stigter recording in front of the Her Game, Her Voice branded studio wall",
+    tall: true,
+  },
+  { src: recordingJersey.url, alt: "Emma in a Stars jersey wearing headphones during a recording" },
+  { src: gameAction.url, alt: "Women's ice hockey players battling for the puck during a game" },
+  { src: pinkStudio.url, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
+  {
+    src: studioMic.url,
+    alt: "Behind the scenes at the Her Game, Her Voice studio with a RODE microphone",
+    tall: true,
+  },
+  { src: seasonTwo.url, alt: "Emma warming up for season two of the podcast" },
+];
+
 function AboutPage() {
   return (
     <>
