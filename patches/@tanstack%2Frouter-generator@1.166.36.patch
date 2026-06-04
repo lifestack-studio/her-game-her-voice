@@ -1,0 +1,30 @@
+diff --git a/dist/cjs/generator.cjs b/dist/cjs/generator.cjs
+index 848c260ef2602ec7d33cfc80fe8edaedeabcbcc2..ae1478333c0ff787e9f1a0a30c33cb02113bf9fd 100644
+--- a/dist/cjs/generator.cjs
++++ b/dist/cjs/generator.cjs
+@@ -563,6 +563,10 @@ ${acc.routeTree.map((child) => `${child.variableName}Route: typeof ${require_uti
+ 		};
+ 	}
+ 	async safeFileWrite(opts) {
++		try {
++			const __existing = await this.fs.readFile(opts.filePath);
++			if (String(__existing) === opts.newContent) return await this.fs.stat(opts.filePath);
++		} catch {}
+ 		const tmpPath = this.getTempFileName(opts.filePath);
+ 		await this.fs.writeFile(tmpPath, opts.newContent);
+ 		if (opts.strategy.type === "mtime") {
+diff --git a/dist/esm/generator.js b/dist/esm/generator.js
+index 3da9f65c640324a1f44b30bdcce5336ee88562ae..19cf45b5f30bd3457b961e43c57b3235981dbde8 100644
+--- a/dist/esm/generator.js
++++ b/dist/esm/generator.js
+@@ -559,6 +559,10 @@ ${acc.routeTree.map((child) => `${child.variableName}Route: typeof ${getResolved
+ 		};
+ 	}
+ 	async safeFileWrite(opts) {
++		try {
++			const __existing = await this.fs.readFile(opts.filePath);
++			if (String(__existing) === opts.newContent) return await this.fs.stat(opts.filePath);
++		} catch {}
+ 		const tmpPath = this.getTempFileName(opts.filePath);
+ 		await this.fs.writeFile(tmpPath, opts.newContent);
+ 		if (opts.strategy.type === "mtime") {

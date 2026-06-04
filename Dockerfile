@@ -16,6 +16,9 @@ WORKDIR /app
 # ---- Dependencies (cached layer) ------------------------------------------
 FROM base AS deps
 COPY package.json bun.lock bunfig.toml ./
+# patches/ holds the bun patch for @tanstack/router-generator (idempotent route-
+# tree write) — must be present before install so the patch is applied.
+COPY patches/ ./patches/
 RUN bun install --frozen-lockfile
 
 # ---- Build -----------------------------------------------------------------
