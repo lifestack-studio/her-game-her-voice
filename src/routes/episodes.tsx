@@ -39,7 +39,7 @@ const platforms = [
   },
   {
     label: "Apple Podcasts",
-    href: "https://podcasts.apple.com/",
+    href: "https://podcasts.apple.com/us/podcast/her-game-her-voice/id1825002407",
     Icon: Apple,
     className: "bg-[#000000] text-white hover:brightness-125",
   },

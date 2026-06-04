@@ -40,12 +40,12 @@ export const SOCIAL_LINKS: {
   href: string;
   Icon: LucideIcon | (({ className }: { className?: string }) => ReactElement);
 }[] = [
-  { label: "Instagram", href: "https://instagram.com/hergamehervoice", Icon: Instagram },
+  { label: "Instagram", href: "https://www.instagram.com/hghvpodcast", Icon: Instagram },
   { label: "X (Twitter)", href: "https://x.com/hergamehervoice", Icon: XIcon },
   { label: "LinkedIn", href: "https://linkedin.com/company/hergamehervoice", Icon: Linkedin },
   { label: "Facebook", href: "https://facebook.com/hergamehervoice", Icon: Facebook },
   { label: "YouTube", href: "https://youtube.com/@hergamehervoice", Icon: Youtube },
-  { label: "TikTok", href: "https://tiktok.com/@hergamehervoice", Icon: TikTokIcon },
+  { label: "TikTok", href: "https://www.tiktok.com/@hghvpodcast", Icon: TikTokIcon },
 ];
 
 export const SPOTIFY_ICON = Music2;
