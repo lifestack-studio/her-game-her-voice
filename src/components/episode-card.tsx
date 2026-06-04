@@ -63,6 +63,7 @@ export function EpisodeCard({ episode, isActive, onPlay }: EpisodeCardProps) {
             <ExternalLink className="size-3.5" aria-hidden="true" />
           </a>
         </div>
+        {isActive && episode.audioUrl ? <AudioPlayer episode={episode} /> : null}
       </div>
     </article>
   );
