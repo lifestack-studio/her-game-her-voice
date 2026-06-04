@@ -125,6 +125,23 @@ function AboutPage() {
         </div>
       </section>
 
+      {/* Behind the scenes gallery */}
+      <section className="bg-secondary/20 py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
+              Behind the Mic
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              From the rink to the studio — moments from the journey so far.
+            </p>
+          </div>
+          <PhotoGallery photos={galleryPhotos} className="mt-12" />
+        </div>
+      </section>
+
+
+
       {/* Mission pillars */}
       <section className="bg-secondary/20 py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
