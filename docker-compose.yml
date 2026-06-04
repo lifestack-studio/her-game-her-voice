@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: her-game-her-voice:latest
+    container_name: hghv-web
+    restart: unless-stopped
+    ports:
+      # host:container — change the left side if 3000 is taken on your VPS
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      # ---- Spotify (only needed once you wire up /api/podcast/latest) ----
+      # Set these in a .env file next to this compose file (NOT committed):
+      #   SPOTIFY_CLIENT_ID=xxxx
+      #   SPOTIFY_CLIENT_SECRET=xxxx
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID:-}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:-}
