@@ -73,7 +73,7 @@ export function SiteFooter() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
               />
-              <Button type="submit" variant="coral">
+              <Button type="submit" variant="onDark">
                 Subscribe
               </Button>
             </form>
