@@ -71,7 +71,7 @@ function HomePage() {
       </section>
 
       {/* Brand banner strip */}
-      <section className="bg-[#f4dce9]">
+      <section className="bg-blush">
         <img
           src={brandBanner.url}
           alt="Her Game, Her Voice — Leading the conversation in Womens Ice Hockey"
