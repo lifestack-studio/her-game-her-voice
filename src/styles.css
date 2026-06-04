@@ -143,6 +143,7 @@
     color-mix(in oklab, #430650 24%, transparent) 100%
   );
   --gradient-navy: linear-gradient(160deg, #430650 0%, #2a0433 100%);
+  --gradient-brand: linear-gradient(120deg, #430650 0%, #3a0a47 45%, #004f5c 100%);
   --shadow-card: 0 10px 30px -12px color-mix(in oklab, #430650 28%, transparent);
   --shadow-lift: 0 22px 48px -18px color-mix(in oklab, #430650 42%, transparent);
 }
