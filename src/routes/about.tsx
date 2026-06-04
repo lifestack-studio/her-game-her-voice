@@ -126,7 +126,8 @@ function AboutPage() {
       </section>
 
       {/* Behind the scenes gallery */}
-      <section className="bg-secondary/20 py-20 sm:py-24">
+      <section className="bg-background py-20 sm:py-24">
+
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center">
             <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
