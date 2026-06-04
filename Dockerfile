@@ -24,10 +24,17 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV=production
 # REQUIRED: TanStack Start + Nitro only emit a standalone server when a preset
-# is set. Without this, no dist/server/index.mjs is produced and there is
-# nothing to run. node-server binds PORT/HOST and serves SSR + API routes.
+# is set. Without this, no server entry is produced and there is nothing to run.
+# node-server binds PORT/HOST and serves SSR + API routes.
 ENV NITRO_PRESET=node-server
-RUN bun run build
+# The Nitro node-server output lands in dist/ (Lovable's output override) on some
+# environments and in .output/ (Nitro's default) on others — notably the Linux CI
+# builder differs from local. Normalize whichever one has the server entry into a
+# fixed /app/server-bundle so the runtime stage is deterministic.
+RUN bun run build && \
+    if [ -f dist/server/index.mjs ]; then cp -r dist /app/server-bundle; \
+    elif [ -f .output/server/index.mjs ]; then cp -r .output /app/server-bundle; \
+    else echo "ERROR: no node-server build output (looked for dist/ and .output/)"; ls -la; exit 1; fi
 
 # ---- Runtime ---------------------------------------------------------------
 FROM oven/bun:1.1.38-slim AS runner
@@ -36,10 +43,12 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-# The Nitro output is self-contained: only the dist/ bundle plus package.json
-# (for the `start` script) are needed — no node_modules at runtime.
+# The Nitro output is self-contained: only the server bundle plus package.json
+# (for the `start` script) are needed — no node_modules at runtime. The build
+# stage normalized the bundle to /app/server-bundle; mount it at ./dist so the
+# `start` script (bun ./dist/server/index.mjs) resolves.
 COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/dist ./dist
+COPY --from=build /app/server-bundle ./dist
 
 # Drop privileges — the oven/bun image ships a non-root `bun` user.
 USER bun
