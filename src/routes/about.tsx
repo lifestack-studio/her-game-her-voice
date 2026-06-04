@@ -171,7 +171,7 @@ function AboutPage() {
           <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">
             Want to be part of the story?
           </h2>
-          <Button asChild variant="coral" size="lg">
+          <Button asChild variant="onDark" size="lg">
             <Link to="/contact">Get in Touch</Link>
           </Button>
         </div>
