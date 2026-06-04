@@ -3,11 +3,13 @@ import { queryOptions } from "@tanstack/react-query";
 /** A single podcast episode as returned by GET /api/podcast/latest (RSS-powered). */
 export interface Episode {
   id: string;
-  spotifyUri: string;
   name: string;
   description: string;
   releaseDate: string;
   image: string;
+  /** Direct audio URL (RSS <enclosure>) played in the on-page audio player. */
+  audioUrl: string;
+  /** Public Spotify/podcast episode page for the "Listen on Spotify" link. */
   spotifyUrl: string;
 }
 
