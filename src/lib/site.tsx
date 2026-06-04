@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { Instagram, Linkedin, Facebook, Youtube, Music2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -37,7 +38,7 @@ function TikTokIcon({ className }: { className?: string }) {
 export const SOCIAL_LINKS: {
   label: string;
   href: string;
-  Icon: LucideIcon | (({ className }: { className?: string }) => JSX.Element);
+  Icon: LucideIcon | (({ className }: { className?: string }) => ReactElement);
 }[] = [
   { label: "Instagram", href: "https://instagram.com/hergamehervoice", Icon: Instagram },
   { label: "X (Twitter)", href: "https://x.com/hergamehervoice", Icon: XIcon },
