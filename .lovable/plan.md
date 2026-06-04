@@ -1,50 +1,50 @@
-# Three updates: tagline font, page headers, latest episodes
+# Switch the Episodes feed from Spotify API to RSS
 
-## 1. "lifestack" in Inter Semibold (homepage)
+You've decided to power the **Latest 3 episodes** from the podcast's **RSS feed** (no Spotify Client Credentials / client secret), while **keeping the Spotify embed player** for playback. The RSS URL will be supplied later by the client, so the code reads it from a server secret and degrades gracefully until it's set.
 
-In `src/components/presented-by.tsx`, the heading "Her Game, Her Voice is brought to you by lifestack" currently renders entirely in Fraunces (`font-display`). Wrap the word **lifestack** in a span styled with Inter Semibold (`font-sans font-semibold`) so only that word switches typeface, keeping the rest in the display font and lowercase per brand.
+## What changes
 
-## 2. Remove the messy banner from interior page headers
+### 1. Backend route `src/routes/api/podcast/latest.ts` (rewrite)
+Replace the entire Spotify Client Credentials flow with RSS parsing:
+- Remove `getAccessToken()`, the `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` logic, and the Spotify Web API calls.
+- Read `PODCAST_RSS_URL` from server env. If it's not set yet, return `503` with a friendly `{ error }` (same pattern as today) so the page shows its empty/placeholder state until you supply the URL.
+- `fetch()` the RSS XML server-side, parse it, take the **3 newest** `<item>` entries, and map each to the existing `Episode` shape.
+- Keep the `Cache-Control: public, max-age=600` response header.
 
-All five interior pages (About, Episodes, Shop, Bloopers, Contact) share one component: `src/components/page-hero.tsx`. It currently layers the `brand-banner.png` image (object-cover, mix-blend) over a navy gradient — this is the messy element.
+### 2. RSS parsing
+- Cloudflare's Worker runtime has no `DOMParser`, so add a pure-JS, edge-safe XML parser (`fast-xml-parser`) and parse the feed with it.
+- Map standard podcast RSS fields → `Episode`:
+  - `name` ← `<title>`
+  - `description` ← `<description>` / `<itunes:summary>` (HTML stripped, truncated)
+  - `releaseDate` ← `<pubDate>`
+  - `image` ← `<itunes:image href>` (item-level, falling back to channel image)
+  - `spotifyUrl` ← the item `<link>` (or guid) when it's an `open.spotify.com/episode/...` URL
+  - `spotifyUri` ← derived `spotify:episode:{id}` from that link, used by the embed player to switch episodes
 
-Replace it with a **clean plum → teal brand gradient band**:
-- Drop the `brandBanner` image import and `<img>` entirely.
-- Use an on-brand gradient background (plum to teal) defined via a token in `src/styles.css` (e.g. a `--gradient-brand` / `bg-brand-gradient` utility) instead of `bg-navy-gradient`.
-- Keep the title (Fraunces, white) and subtitle, plus the existing decorative ring accent for visual interest.
-- Preserve the `children` slot (Bloopers passes content into the hero).
+### 3. `src/lib/podcast.ts` (minor)
+- Keep the `Episode` interface, `fetchLatestEpisodes()`, `latestEpisodesQueryOptions`, and `formatReleaseDate()` — they're transport-agnostic and still point at `/api/podcast/latest`.
+- No structural change needed; only comments updated to say "RSS-powered" instead of "Spotify API".
 
-Because every interior page uses `PageHero`, this single edit updates all five at once. No per-page changes needed (the homepage hero is separate and untouched).
+### 4. `src/routes/episodes.tsx` (wire up the parked UI)
+- Swap the current single `LazyIframe` show-embed for the **Latest Episodes** section: 3 `EpisodeCard`s beside one shared `SpotifyPlayer`, loaded via TanStack Query (`latestEpisodesQueryOptions`), with skeleton / empty / error+retry states.
+- Keep the "Subscribe wherever you listen" section unchanged.
 
-## 3. Latest 3 episodes on the Episodes page (Spotify-powered)
+### 5. Keep (still relevant)
+- `src/components/episode-card.tsx` and `src/components/spotify-player.tsx` — reused as-is.
 
-Rework `src/routes/episodes.tsx` to add a **Latest Episodes** section near the top that shows the 3 newest episodes as cards plus one shared, switchable Spotify player. The full all-episodes show embed is removed (you chose "latest 3 only"); the "Subscribe wherever you listen" section stays.
-
-### Frontend (this project)
-- **Types** — new `src/lib/podcast.ts` with an `Episode` interface matching your contract: `id`, `spotifyUri`, `name`, `description`, `releaseDate`, `image`, `spotifyUrl`.
-- **API client** — small helper in `src/lib/podcast.ts` that fetches `GET /api/podcast/latest` and returns `Episode[]`, wired through a TanStack Query `queryOptions` (the project standard).
-- **EpisodeCard** component — artwork, title, formatted release date, truncated description, a "Listen on Spotify" external link (`target="_blank" rel="noopener noreferrer"`), and a "Play here" button. Active card gets a clear selected state (plum ring/border). Fully keyboard-accessible with visible focus.
-- **SpotifyPlayer** component — loads the Spotify iFrame API script once, creates one reusable embed controller, and switches episodes by URI without rebuilding layout. Responsive; first episode auto-selected on load.
-- **States** — skeleton cards + player placeholder while loading; friendly empty state ("No episodes available right now."); error state with a non-technical message and a Retry button.
-- **Layout** — two-column on desktop (cards beside player), stacked on mobile (cards above player). Reuses existing `Card`, `Button`, `Skeleton` primitives and current spacing/section styling.
-
-### Backend endpoint `/api/podcast/latest`
-Your spec says to assume the backend exposes this. Since this whole project runs server-side in your Docker container, the cleanest fit is a **TanStack server route** at `src/routes/api/podcast/latest.ts` — it runs only on the server, so the Spotify secret never touches the browser. It will:
-- Use the Spotify Client Credentials flow (server-side token fetch) to call the Spotify API for show `3H4XRlV2oIFAS9u9Z5vvme`, take the 3 newest episodes, map to the contract shape, and return JSON.
-- Read `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` from server env (stored as secrets, never in frontend).
-
-If you'd rather point at a separate backend you maintain, we keep the exact same frontend and just leave a TODO at the fetch URL — the frontend is backend-agnostic either way.
+## Code/files removed or no longer relevant
+- Spotify Client Credentials token flow and all `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` references in `latest.ts` (deleted).
+- No Spotify API secrets exist in the project, so none need deleting.
+- `docker-compose.yml` / `DEPLOY.md` references to `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` are updated to `PODCAST_RSS_URL` so the deploy docs stay accurate.
 
 ## Files touched
-- `src/components/presented-by.tsx` — Inter Semibold "lifestack"
-- `src/components/page-hero.tsx` — clean plum gradient header, banner removed
-- `src/styles.css` — add brand gradient token
-- `src/routes/episodes.tsx` — Latest Episodes section, remove full show embed
-- `src/lib/podcast.ts` (new) — types + API client + query options
-- `src/components/episode-card.tsx`, `src/components/spotify-player.tsx` (new)
-- `src/routes/api/podcast/latest.ts` (new, optional backend route)
+- `src/routes/api/podcast/latest.ts` — rewrite to RSS parsing
+- `src/routes/episodes.tsx` — use cards + player instead of single embed
+- `src/lib/podcast.ts` — comment-only updates
+- `package.json` — add `fast-xml-parser`
+- `docker-compose.yml`, `DEPLOY.md` — swap Spotify creds env for `PODCAST_RSS_URL`
 
 ## Backend assumptions
-- Endpoint: `GET /api/podcast/latest` returning `Episode[]` in your specified shape.
-- If implemented here: requires `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` secrets; no Spotify credentials ever ship to the browser.
-- Spotify show ID: `3H4XRlV2oIFAS9u9Z5vvme` (from existing config).
+- Endpoint stays `GET /api/podcast/latest`, returns `Episode[]` (latest 3).
+- Requires one server secret: **`PODCAST_RSS_URL`** (the feed URL you'll get from the client). I'll add it as a secret when you have it; until then the page shows the empty/placeholder state.
+- The Spotify embed player needs a `spotify:episode:{id}` per episode. This works when the feed is the **Spotify-distributed RSS feed** (item links/guids are `open.spotify.com/episode/...`). If the supplied feed doesn't expose Spotify episode URLs, we'll either fall back to a single show-embed player or switch the player to native audio from the RSS `<enclosure>` — I'll confirm once I see the feed.

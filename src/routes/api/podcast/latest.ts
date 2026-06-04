@@ -1,89 +1,130 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { XMLParser } from "fast-xml-parser";
 
 /**
  * GET /api/podcast/latest
  *
- * Returns the 3 most recent episodes of the show using Spotify's
- * Client Credentials flow. Runs server-side only — Spotify credentials are
- * read from env and never reach the browser.
+ * Returns the 3 most recent episodes by reading the podcast's RSS feed.
+ * Runs server-side only — the feed URL is read from env and never reaches
+ * the browser.
  *
- * Required server env (stored as secrets, not in frontend code):
- *   - SPOTIFY_CLIENT_ID
- *   - SPOTIFY_CLIENT_SECRET
+ * Required server env (stored as a secret, not in frontend code):
+ *   - PODCAST_RSS_URL  (the show's RSS feed URL, supplied by the client)
  */
 
-const SHOW_ID = "3H4XRlV2oIFAS9u9Z5vvme";
-const MARKET = "GB";
-
-interface SpotifyEpisode {
-  id: string;
-  uri: string;
-  name: string;
-  description: string;
-  release_date: string;
-  images: { url: string }[];
-  external_urls: { spotify: string };
+interface RssItem {
+  title?: string;
+  description?: string;
+  "itunes:summary"?: string;
+  pubDate?: string;
+  link?: string;
+  guid?: string | { "#text"?: string };
+  "itunes:image"?: { "@_href"?: string };
+  enclosure?: { "@_url"?: string };
 }
 
-async function getAccessToken(clientId: string, clientSecret: string): Promise<string> {
-  const res = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
-    },
-    body: "grant_type=client_credentials",
-  });
-  if (!res.ok) {
-    throw new Error(`Spotify token request failed (${res.status})`);
-  }
-  const data = (await res.json()) as { access_token?: string };
-  if (!data.access_token) throw new Error("Spotify token missing in response");
-  return data.access_token;
+interface ParsedFeed {
+  rss?: {
+    channel?: {
+      "itunes:image"?: { "@_href"?: string };
+      image?: { url?: string };
+      item?: RssItem | RssItem[];
+    };
+  };
+}
+
+const parser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: "@_",
+  trimValues: true,
+});
+
+/** Strip HTML tags and collapse whitespace for a clean text description. */
+function stripHtml(input: string): string {
+  return input
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Pull a Spotify episode id from a URL/URI like open.spotify.com/episode/{id}. */
+function spotifyEpisodeId(value?: string): string | null {
+  if (!value) return null;
+  const url = value.match(/open\.spotify\.com\/episode\/([A-Za-z0-9]+)/);
+  if (url) return url[1];
+  const uri = value.match(/spotify:episode:([A-Za-z0-9]+)/);
+  if (uri) return uri[1];
+  return null;
+}
+
+function guidText(guid: RssItem["guid"]): string | undefined {
+  if (!guid) return undefined;
+  return typeof guid === "string" ? guid : guid["#text"];
 }
 
 export const Route = createFileRoute("/api/podcast/latest")({
   server: {
     handlers: {
       GET: async () => {
-        const clientId = process.env.SPOTIFY_CLIENT_ID;
-        const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+        const feedUrl = process.env.PODCAST_RSS_URL;
 
-        if (!clientId || !clientSecret) {
+        if (!feedUrl) {
           return Response.json(
-            { error: "Spotify credentials are not configured." },
+            { error: "Podcast feed is not configured yet." },
             { status: 503 },
           );
         }
 
         try {
-          const token = await getAccessToken(clientId, clientSecret);
-
-          const res = await fetch(
-            `https://api.spotify.com/v1/shows/${SHOW_ID}/episodes?market=${MARKET}&limit=3`,
-            { headers: { Authorization: `Bearer ${token}` } },
-          );
+          const res = await fetch(feedUrl, {
+            headers: { Accept: "application/rss+xml, application/xml, text/xml" },
+          });
           if (!res.ok) {
-            console.error(`Spotify episodes request failed: ${res.status}`);
+            console.error(`RSS feed request failed: ${res.status}`);
             return Response.json(
               { error: `Failed to load episodes (${res.status})` },
               { status: 502 },
             );
           }
 
-          const payload = (await res.json()) as { items: (SpotifyEpisode | null)[] };
-          const episodes = (payload.items ?? [])
-            .filter((e): e is SpotifyEpisode => Boolean(e))
-            .slice(0, 3)
-            .map((e) => ({
-              id: e.id,
-              spotifyUri: e.uri,
-              name: e.name,
-              description: e.description,
-              releaseDate: e.release_date,
-              image: e.images?.[0]?.url ?? "",
-              spotifyUrl: e.external_urls?.spotify ?? "",
-            }));
+          const xml = await res.text();
+          const parsed = parser.parse(xml) as ParsedFeed;
+          const channel = parsed.rss?.channel;
+
+          const rawItems = channel?.item;
+          const items: RssItem[] = Array.isArray(rawItems)
+            ? rawItems
+            : rawItems
+              ? [rawItems]
+              : [];
+
+          const channelImage =
+            channel?.["itunes:image"]?.["@_href"] ?? channel?.image?.url ?? "";
+
+          const episodes = items.slice(0, 3).map((item, index) => {
+            const link = item.link ?? guidText(item.guid) ?? "";
+            const id =
+              spotifyEpisodeId(link) ??
+              spotifyEpisodeId(guidText(item.guid)) ??
+              `episode-${index}`;
+            const spotifyId = spotifyEpisodeId(link) ?? spotifyEpisodeId(guidText(item.guid));
+            const rawDescription =
+              item.description ?? item["itunes:summary"] ?? "";
+
+            return {
+              id,
+              spotifyUri: spotifyId ? `spotify:episode:${spotifyId}` : "",
+              name: item.title ?? "Untitled episode",
+              description: stripHtml(rawDescription).slice(0, 300),
+              releaseDate: item.pubDate ?? "",
+              image: item["itunes:image"]?.["@_href"] ?? channelImage,
+              spotifyUrl: link,
+            };
+          });
 
           return Response.json(episodes, {
             headers: { "Cache-Control": "public, max-age=600" },

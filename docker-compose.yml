@@ -13,9 +13,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOST: 0.0.0.0
-      # ---- Spotify (only needed once you wire up /api/podcast/latest) ----
-      # Set these in a .env file next to this compose file (NOT committed):
-      #   SPOTIFY_CLIENT_ID=xxxx
-      #   SPOTIFY_CLIENT_SECRET=xxxx
-      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID:-}
-      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:-}
+      # ---- Podcast RSS (powers /api/podcast/latest) ----
+      # Set this in a .env file next to this compose file (NOT committed):
+      #   PODCAST_RSS_URL=https://your-feed-url/rss
+      PODCAST_RSS_URL: ${PODCAST_RSS_URL:-}
