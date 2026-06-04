@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Music2, Apple, Youtube, RefreshCw } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { EpisodeCard } from "@/components/episode-card";
-import { SpotifyPlayer } from "@/components/spotify-player";
+import { AudioPlayer } from "@/components/audio-player";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { latestEpisodesQueryOptions, type Episode } from "@/lib/podcast";
@@ -57,19 +57,22 @@ function LatestEpisodes() {
     latestEpisodesQueryOptions,
   );
   const episodes = data ?? [];
-  const [activeUri, setActiveUri] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  // Auto-select the first episode (with a playable Spotify URI) on load.
+  // Auto-select the first playable episode on load.
   useEffect(() => {
-    if (!activeUri && episodes.length > 0) {
-      const first = episodes.find((e) => e.spotifyUri) ?? episodes[0];
-      if (first.spotifyUri) setActiveUri(first.spotifyUri);
+    if (!activeId && episodes.length > 0) {
+      const first = episodes.find((e) => e.audioUrl) ?? episodes[0];
+      if (first.audioUrl) setActiveId(first.id);
     }
-  }, [episodes, activeUri]);
+  }, [episodes, activeId]);
 
   const handlePlay = (episode: Episode) => {
-    if (episode.spotifyUri) setActiveUri(episode.spotifyUri);
+    if (episode.audioUrl) setActiveId(episode.id);
   };
+
+  const activeEpisode = episodes.find((e) => e.id === activeId) ?? null;
+
 
   if (isLoading) {
     return (
@@ -119,16 +122,16 @@ function LatestEpisodes() {
           <EpisodeCard
             key={episode.id}
             episode={episode}
-            isActive={Boolean(episode.spotifyUri) && episode.spotifyUri === activeUri}
+            isActive={episode.id === activeId}
             onPlay={handlePlay}
           />
         ))}
       </div>
       <div className="lg:sticky lg:top-24 lg:self-start">
-        {activeUri ? (
-          <SpotifyPlayer uri={activeUri} title="Her Game, Her Voice — episode player" />
+        {activeEpisode ? (
+          <AudioPlayer episode={activeEpisode} />
         ) : (
-          <div className="flex h-[352px] w-full items-center justify-center rounded-2xl bg-muted text-center text-sm text-muted-foreground">
+          <div className="flex h-[200px] w-full items-center justify-center rounded-2xl bg-muted text-center text-sm text-muted-foreground">
             Select an episode to start listening.
           </div>
         )}
