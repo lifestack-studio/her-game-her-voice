@@ -1,0 +1,36 @@
+# Build artifacts & deps (rebuilt inside the image)
+node_modules
+dist
+dist-ssr
+.output
+.nitro
+.vinxi
+.tanstack
+
+# VCS & tooling
+.git
+.gitignore
+.lovable
+.vscode
+.idea
+
+# Cloudflare / Wrangler (unused for self-hosting)
+.wrangler
+.dev.vars
+
+# Local env & secrets — never bake into the image
+.env
+.env.local
+.env.*.local
+
+# Logs & OS cruft
+*.log
+npm-debug.log*
+.DS_Store
+tsconfig.tsbuildinfo
+
+# Docker & docs (not needed in the build context)
+Dockerfile
+.dockerignore
+docker-compose.yml
+README.md

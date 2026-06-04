@@ -1,0 +1,30 @@
+# Her Game, Her Voice — self-hosting via Docker Compose.
+#
+# Start everything (builds the image on first run, no manual steps):
+#   docker compose up -d
+#
+# The app is stateless: it has no database and no cache/queue, so no supporting
+# services are required. It only reads an external podcast RSS feed at runtime,
+# configured through PODCAST_RSS_URL (see .env.example).
+name: her-game-her-voice
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: her-game-her-voice:latest
+    container_name: her-game-her-voice-web
+    restart: unless-stopped
+    ports:
+      # host:container — change the left side if 3000 is taken on the VPS.
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      # The server binds 0.0.0.0:$PORT so it is reachable from outside the container.
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      # Powers /api/podcast/latest. Set in a .env file next to this compose file
+      # (copy .env.example). Left empty, the endpoint returns 503 but the site
+      # still runs.
+      PODCAST_RSS_URL: "${PODCAST_RSS_URL:-}"

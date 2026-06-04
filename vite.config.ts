@@ -12,4 +12,16 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+
+  // Self-hosting (Docker/VPS) build target.
+  //
+  // Lovable's internal publishing relies on the default Cloudflare preset, so we
+  // must NOT change that default. Instead, Nitro is only force-enabled — with the
+  // requested preset — when the NITRO_PRESET env var is present. The Docker build
+  // sets `NITRO_PRESET=node-server`, which produces a standalone Node server at
+  // `dist/server/index.mjs`. With the var unset (Lovable sandbox, normal builds),
+  // this is `undefined` and the config keeps its Cloudflare default behavior.
+  nitro: process.env.NITRO_PRESET
+    ? { preset: process.env.NITRO_PRESET }
+    : undefined,
 });
