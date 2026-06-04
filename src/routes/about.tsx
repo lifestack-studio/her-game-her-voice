@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mic, Users, ShieldCheck } from "lucide-react";
-import emmaImg from "@/assets/emma.jpg";
+import emmaHeadshot from "@/assets/emma-headshot.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 
