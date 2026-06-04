@@ -35,14 +35,12 @@ Replace the entire Spotify Client Credentials flow with RSS parsing:
 ## Code/files removed or no longer relevant
 - Spotify Client Credentials token flow and all `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` references in `latest.ts` (deleted).
 - No Spotify API secrets exist in the project, so none need deleting.
-- `docker-compose.yml` / `DEPLOY.md` references to `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` are updated to `PODCAST_RSS_URL` so the deploy docs stay accurate.
 
 ## Files touched
 - `src/routes/api/podcast/latest.ts` — rewrite to RSS parsing
 - `src/routes/episodes.tsx` — use cards + player instead of single embed
 - `src/lib/podcast.ts` — comment-only updates
 - `package.json` — add `fast-xml-parser`
-- `docker-compose.yml`, `DEPLOY.md` — swap Spotify creds env for `PODCAST_RSS_URL`
 
 ## Backend assumptions
 - Endpoint stays `GET /api/podcast/latest`, returns `Episode[]` (latest 3).
