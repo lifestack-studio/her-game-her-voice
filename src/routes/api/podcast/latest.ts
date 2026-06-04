@@ -97,21 +97,17 @@ export const Route = createFileRoute("/api/podcast/latest")({
 
           const episodes = items.slice(0, 3).map((item, index) => {
             const link = item.link ?? guidText(item.guid) ?? "";
-            const id =
-              spotifyEpisodeId(link) ??
-              spotifyEpisodeId(guidText(item.guid)) ??
-              `episode-${index}`;
-            const spotifyId = spotifyEpisodeId(link) ?? spotifyEpisodeId(guidText(item.guid));
+            const id = guidText(item.guid) ?? `episode-${index}`;
             const rawDescription =
               item.description ?? item["itunes:summary"] ?? "";
 
             return {
               id,
-              spotifyUri: spotifyId ? `spotify:episode:${spotifyId}` : "",
               name: item.title ?? "Untitled episode",
               description: stripHtml(rawDescription).slice(0, 300),
               releaseDate: item.pubDate ?? "",
               image: item["itunes:image"]?.["@_href"] ?? channelImage,
+              audioUrl: item.enclosure?.["@_url"] ?? "",
               spotifyUrl: link,
             };
           });
