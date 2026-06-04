@@ -23,28 +23,11 @@ export function AudioPlayer({ episode }: AudioPlayerProps) {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-lift">
-      <div className="flex gap-4">
-        <img
-          src={episode.image}
-          alt={`Cover art for ${episode.name}`}
-          width={80}
-          height={80}
-          className="h-20 w-20 flex-shrink-0 rounded-xl object-cover"
-        />
-        <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Now playing · {formatReleaseDate(episode.releaseDate)}
-          </p>
-          <h3 className="mt-1 line-clamp-2 font-display text-lg font-bold text-primary">
-            {episode.name}
-          </h3>
-        </div>
-      </div>
       <audio
         ref={audioRef}
         controls
         preload="none"
-        className="mt-4 w-full"
+        className="w-full"
         aria-label={`Audio player for ${episode.name}`}
       >
         <source src={episode.audioUrl} type="audio/mpeg" />
