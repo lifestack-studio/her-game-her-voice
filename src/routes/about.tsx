@@ -56,7 +56,7 @@ const galleryPhotos = [
     tall: true,
   },
   { src: recordingJersey.url, alt: "Emma in a Stars jersey wearing headphones during a recording" },
-  { src: gameAction.url, alt: "Women's ice hockey players battling for the puck during a game" },
+  
   { src: pinkStudio.url, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
   {
     src: studioMic.url,
