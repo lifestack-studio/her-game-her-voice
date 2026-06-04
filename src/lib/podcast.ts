@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 
-/** A single podcast episode as returned by GET /api/podcast/latest. */
+/** A single podcast episode as returned by GET /api/podcast/latest (RSS-powered). */
 export interface Episode {
   id: string;
   spotifyUri: string;

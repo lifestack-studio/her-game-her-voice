@@ -23,13 +23,13 @@ cd hghv
 
 ## 2. (Optional) set secrets
 
-Spotify creds are only needed once `/api/podcast/latest` is wired up. Create a
-`.env` file next to `docker-compose.yml` — it is read automatically by Compose:
+The podcast feed URL is needed for `/api/podcast/latest` to return episodes.
+Create a `.env` file next to `docker-compose.yml` — it is read automatically by
+Compose:
 
 ```bash
 cat > .env <<'EOF'
-SPOTIFY_CLIENT_ID=your_client_id
-SPOTIFY_CLIENT_SECRET=your_client_secret
+PODCAST_RSS_URL=https://your-feed-url/rss
 EOF
 ```
 
