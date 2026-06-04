@@ -108,7 +108,7 @@ export function SiteHeader() {
                       <Link
                         to={link.to}
                         activeOptions={{ exact: link.to === "/" }}
-                        className="block rounded-md px-3 py-3 text-lg font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white data-[status=active]:text-accent"
+                        className="block rounded-md px-3 py-3 text-lg font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white data-[status=active]:text-blush"
                       >
                         {link.label}
                       </Link>
@@ -116,7 +116,7 @@ export function SiteHeader() {
                   </li>
                 ))}
               </ul>
-              <Button asChild variant="coral" size="lg" className="mt-8 w-full">
+              <Button asChild variant="onDark" size="lg" className="mt-8 w-full">
                 <a href={SPOTIFY_SHOW_URL} target="_blank" rel="noopener noreferrer">
                   Listen Now
                 </a>
@@ -124,7 +124,9 @@ export function SiteHeader() {
             </SheetContent>
           </Sheet>
         </div>
+        </div>
       </nav>
     </header>
   );
 }
+
