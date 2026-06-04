@@ -2,8 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import brandBanner from "@/assets/brand-banner.png.asset.json";
+import gameAction from "@/assets/game-action.webp.asset.json";
+import jerseyDisplay from "@/assets/jersey-display.jpg.asset.json";
+import merchDisplay from "@/assets/merch-display.jpg.asset.json";
+import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
+import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
+import studioMic from "@/assets/studio-mic.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { LazyIframe } from "@/components/lazy-iframe";
+import { PhotoGallery } from "@/components/photo-gallery";
 import { SPOTIFY_SHOW_URL, SPOTIFY_EMBED_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
