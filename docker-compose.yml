@@ -1,19 +1,18 @@
-# Her Game, Her Voice — self-hosting via Docker Compose.
+# Her Game, Her Voice — Hostinger VPS / Docker Manager deployment.
 #
-# Start everything (builds the image on first run, no manual steps):
+# This pulls a prebuilt PUBLIC image from GHCR (published by CI on every push to
+# main) — it does NOT build locally. Start with:
 #   docker compose up -d
 #
-# The app is stateless: it has no database and no cache/queue, so no supporting
-# services are required. It only reads an external podcast RSS feed at runtime,
-# configured through PODCAST_RSS_URL (see .env.example).
+# The app is stateless: no database, cache, or queue. It only reads an external
+# podcast RSS feed at runtime via PODCAST_RSS_URL (see .env.example).
 name: her-game-her-voice
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: her-game-her-voice:latest
+    image: ghcr.io/lifestack-studio/her-game-her-voice:latest
+    # Always fetch the newest published image on `up`/`pull`.
+    pull_policy: always
     container_name: her-game-her-voice-web
     restart: unless-stopped
     ports:
@@ -25,6 +24,6 @@ services:
       PORT: "3000"
       HOST: "0.0.0.0"
       # Powers /api/podcast/latest. Set in a .env file next to this compose file
-      # (copy .env.example). Left empty, the endpoint returns 503 but the site
-      # still runs.
+      # (copy .env.example) or as a Docker Manager environment variable. Left
+      # empty, the endpoint returns 503 but the site still runs.
       PODCAST_RSS_URL: "${PODCAST_RSS_URL:-}"

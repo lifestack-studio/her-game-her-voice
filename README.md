@@ -34,12 +34,13 @@ The dev server runs at the URL printed in your terminal (typically http://localh
 
 | Command            | Description                                  |
 | ------------------ | -------------------------------------------- |
-| `bun dev`          | Start the Vite dev server                    |
-| `bun build`        | Production build                             |
-| `bun run build:dev`| Build in development mode                    |
-| `bun preview`      | Preview the production build locally         |
-| `bun lint`         | Run ESLint                                   |
-| `bun format`       | Format all files with Prettier               |
+| `bun dev`          | Start the Vite dev server                            |
+| `bun build`        | Production build (Cloudflare target by default; set `NITRO_PRESET=node-server` to emit the standalone `dist/server/index.mjs` used by Docker) |
+| `bun run build:dev`| Build in development mode                             |
+| `bun preview`      | Preview the production build locally                  |
+| `bun start`        | Run the built standalone server (`dist/server/index.mjs`) — used by the container |
+| `bun lint`         | Run ESLint                                            |
+| `bun format`       | Format all files with Prettier                       |
 
 ## Environment variables
 
@@ -54,54 +55,71 @@ Docker/production, use a `.env` file (see [Deployment](#deployment-docker--hosti
 
 ## Deployment (Docker / Hostinger VPS)
 
-The app ships as a self-contained Docker image and runs with **one command** — no
-manual build or setup steps. It's a stateless SSR site: **no database, Redis, or
-other supporting services are required**; the only external dependency is the
-podcast RSS feed (`PODCAST_RSS_URL`).
+Deployment uses a **prebuilt public image** — the VPS pulls it, it does **not**
+build locally. CI publishes the image to GitHub Container Registry (GHCR) on every
+push to `main`; Hostinger Docker Manager then runs `docker compose up -d` to pull
+and start it. It's a stateless SSR site: **no database, Redis, or other supporting
+services are required**; the only external dependency is the podcast RSS feed
+(`PODCAST_RSS_URL`).
 
-The image builds the app with Nitro's **`node-server`** preset (driven by the
-`NITRO_PRESET` env var, which `vite.config.ts` forwards to Nitro) so it runs as a
-plain Node server on a VPS — completely independent of Lovable's internal
-Cloudflare publishing, which is left untouched.
+The image compiles the app with Nitro's **`node-server`** preset (driven by the
+`NITRO_PRESET` env var, which `vite.config.ts` forwards to Nitro) into a
+self-contained `dist/server/index.mjs` that Bun runs as a standalone server —
+completely independent of Lovable's internal Cloudflare publishing, which is left
+untouched.
 
 **Files involved:**
 
-- `Dockerfile` — multi-stage build (Bun builds → `node:22-slim` runs `dist/server/index.mjs`)
+- `.github/workflows/docker-publish.yml` — builds & pushes the image to GHCR on push to `main`
+- `Dockerfile` — multi-stage Bun build → self-contained runtime (`bun run start`)
+- `docker-compose.yml` — `image:`-only (no local build); project `her-game-her-voice`, service `web`, port `3000`
 - `.dockerignore` — keeps the build context/image small
-- `docker-compose.yml` — one-command run; project name `her-game-her-voice`, service `web`, exposes port `3000`
 - `.env.example` — copy to `.env` and fill in
 
-### Quick start
+Published image: **`ghcr.io/lifestack-studio/her-game-her-voice:latest`**
 
-```bash
-# 1. Get the code onto the VPS
-git clone https://github.com/lifestack-studio/her-game-her-voice.git
-cd her-game-her-voice
+### One-time setup: make the GHCR package public
 
-# 2. Set secrets (optional but recommended)
-cp .env.example .env
-# then edit .env and set PODCAST_RSS_URL=https://your-feed-url/rss
+GHCR packages are created **private** by default, and the `GITHUB_TOKEN` used by
+CI **cannot** flip visibility — this must be done once by hand. So Docker Manager
+can pull without credentials, make it public after the first successful CI run:
 
-# 3. Build & start (image builds automatically on first run)
-docker compose up -d
-```
+1. Push to `main` and wait for the **"Build and publish image"** Actions run to
+   finish (the package doesn't exist in GitHub until then — if you don't see it
+   yet, the run hasn't completed).
+2. GitHub → the **`her-game-her-voice`** repo → **Packages** (right sidebar) →
+   open the `her-game-her-voice` package.
+3. **Package settings** → **Danger Zone** → **Change visibility** → **Public**.
+   (If your org restricts this, an org admin must do it.)
 
-The site is then live on the VPS at `http://<your-vps-ip>:3000`. The server binds
-`0.0.0.0:3000`, so it's reachable from outside the container.
+(One time only — subsequent pushes just update the public image.)
 
-### Hostinger Docker Manager
+### Deploy on the VPS / Hostinger Docker Manager
+
+> **Prerequisite:** complete "make the GHCR package public" above first. Otherwise
+> the pull fails with `denied` / `manifest unknown` / `not found`, because the VPS
+> pulls anonymously.
 
 In Hostinger's **Docker Manager**, create a project named **`her-game-her-voice`**
-pointing at this repository. It uses the root `docker-compose.yml` and runs
-`docker compose up -d` for you — set `PODCAST_RSS_URL` as a project environment
-variable (or commit a `.env` to the server, never to git).
+using this repo's root `docker-compose.yml`, and set `PODCAST_RSS_URL` as a project
+environment variable. Or from a shell on the VPS:
+
+```bash
+git clone https://github.com/lifestack-studio/her-game-her-voice.git
+cd her-game-her-voice
+cp .env.example .env          # then set PODCAST_RSS_URL=https://your-feed-url/rss
+docker compose up -d          # pulls the public image and starts it
+```
+
+The site is then live at `http://<your-vps-ip>:3000`. The server binds
+`0.0.0.0:3000`, so it's reachable from outside the container.
 
 ### Common operations
 
 ```bash
-docker compose logs -f          # tail logs
-docker compose up -d --build    # rebuild & restart after pulling new code
-docker compose down             # stop and remove the container
+docker compose pull && docker compose up -d   # update to the latest published image
+docker compose logs -f                        # tail logs
+docker compose down                           # stop and remove the container
 ```
 
 > Change the host-side port in `docker-compose.yml` (e.g. `"8080:3000"`) if 3000

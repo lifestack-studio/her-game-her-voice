@@ -3,46 +3,52 @@
 ###############################################################################
 # Her Game, Her Voice — TanStack Start (SSR) production image
 #
-# The app is built with Nitro's "node-server" preset (set via NITRO_PRESET,
-# which vite.config.ts forwards to Nitro) so it runs as a plain Node server,
-# independent of Lovable's internal Cloudflare publishing. The build emits a
-# fully self-contained bundle at dist/server/index.mjs that needs only Node at
-# runtime — no node_modules install in the final image.
+# Built and published as a public container image (GHCR) by CI; the VPS pulls
+# the image rather than building locally. The app is compiled with Nitro's
+# "node-server" preset (via NITRO_PRESET, which vite.config.ts forwards to
+# Nitro) into a fully self-contained bundle at dist/server/index.mjs that runs
+# on Bun and needs no node_modules at runtime.
 ###############################################################################
 
-# ---- 1. Build stage -------------------------------------------------------
-FROM oven/bun:1 AS build
+FROM oven/bun:1.1.38-slim AS base
 WORKDIR /app
 
-# Install dependencies first for better layer caching.
+# ---- Dependencies (cached layer) ------------------------------------------
+FROM base AS deps
 COPY package.json bun.lock bunfig.toml ./
 RUN bun install --frozen-lockfile
 
-# Copy the rest of the source and build for a standalone Node target.
+# ---- Build -----------------------------------------------------------------
+FROM base AS build
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV NODE_ENV=production
+# REQUIRED: TanStack Start + Nitro only emit a standalone server when a preset
+# is set. Without this, no dist/server/index.mjs is produced and there is
+# nothing to run. node-server binds PORT/HOST and serves SSR + API routes.
 ENV NITRO_PRESET=node-server
 RUN bun run build
 
-# ---- 2. Runtime stage -----------------------------------------------------
-# Small Node image — the built output is self-contained ESM.
-FROM node:22-slim AS runtime
+# ---- Runtime ---------------------------------------------------------------
+FROM oven/bun:1.1.38-slim AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
-# Nitro's node-server listens on PORT (default 3000) and binds HOST 0.0.0.0.
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-# Run as the non-root user that the base image already ships.
-USER node
+# The Nitro output is self-contained: only the dist/ bundle plus package.json
+# (for the `start` script) are needed — no node_modules at runtime.
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/dist ./dist
 
-# Only the built artifacts are needed at runtime.
-COPY --from=build --chown=node:node /app/dist ./dist
+# Drop privileges — the oven/bun image ships a non-root `bun` user.
+USER bun
 
 EXPOSE 3000
 
-# Container healthcheck against the running server (node 22 has global fetch).
+# Health: the runtime is Bun, which provides global fetch.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+  CMD bun -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
-CMD ["node", "dist/server/index.mjs"]
+# `start` => bun ./dist/server/index.mjs (see package.json)
+CMD ["bun", "run", "start"]
