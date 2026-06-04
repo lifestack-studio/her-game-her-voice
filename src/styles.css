@@ -5,10 +5,11 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Her Game, Her Voice — design system
- * Brand: Ice Blue #A8D5E5, Deep Navy #1B2838, Coral #FF6B6B,
- *        Off-white #F8FAFC, Charcoal #374151
- * Headlines: Outfit. Body: Inter.
+ * Her Game, Her Voice × lifestack — co-brand design system
+ * HGHV: Plum #430650, Blush #F3DBE9, Off-white #F8F8F9, Ink #0E0E0E
+ * lifestack: Teal #004F5C (presence/accent), Orange #FF4500 (marker only)
+ * Headlines: Fraunces. Body / UI: Inter.
+ * Roles, not blending — orange is a marker, never a button or text fill.
  */
 
 @theme inline {
