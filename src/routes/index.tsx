@@ -50,13 +50,14 @@ function HomePage() {
             <h1 className="font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl">
               Her Game,
               <br />
-              <span className="text-accent">Her Voice</span>
+              <span className="text-blush">Her Voice</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-secondary sm:text-2xl">
               Women changing the face of ice hockey, one story at a time.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button asChild variant="coral" size="xl">
+              <Button asChild variant="teal" size="xl">
+
                 <a href={SPOTIFY_SHOW_URL} target="_blank" rel="noopener noreferrer">
                   Listen on Spotify
                 </a>
