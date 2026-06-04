@@ -20,6 +20,8 @@ const buttonVariants = cva(
           "bg-primary text-primary-foreground shadow hover:bg-plum-600 active:bg-plum-700",
         teal:
           "bg-accent text-accent-foreground shadow hover:bg-teal-600 active:bg-teal-700",
+        onDark:
+          "bg-blush text-primary shadow hover:bg-white active:bg-white",
         heroOutline:
           "border-2 border-white/80 bg-transparent text-white hover:bg-white hover:text-primary",
       },
