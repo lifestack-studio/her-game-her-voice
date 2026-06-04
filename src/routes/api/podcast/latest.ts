@@ -51,16 +51,6 @@ function stripHtml(input: string): string {
     .trim();
 }
 
-/** Pull a Spotify episode id from a URL/URI like open.spotify.com/episode/{id}. */
-function spotifyEpisodeId(value?: string): string | null {
-  if (!value) return null;
-  const url = value.match(/open\.spotify\.com\/episode\/([A-Za-z0-9]+)/);
-  if (url) return url[1];
-  const uri = value.match(/spotify:episode:([A-Za-z0-9]+)/);
-  if (uri) return uri[1];
-  return null;
-}
-
 function guidText(guid: RssItem["guid"]): string | undefined {
   if (!guid) return undefined;
   return typeof guid === "string" ? guid : guid["#text"];
