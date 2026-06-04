@@ -48,7 +48,7 @@ export function SiteFooter() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-sm text-white/80 transition-colors hover:text-accent"
+                    className="text-sm text-white/80 transition-colors hover:text-blush"
                   >
                     {link.label}
                   </Link>
