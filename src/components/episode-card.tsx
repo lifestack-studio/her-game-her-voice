@@ -1,5 +1,6 @@
 import { ExternalLink, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AudioPlayer } from "@/components/audio-player";
 import { cn } from "@/lib/utils";
 import { formatReleaseDate, type Episode } from "@/lib/podcast";
 
