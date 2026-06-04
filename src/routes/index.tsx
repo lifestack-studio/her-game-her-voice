@@ -151,6 +151,23 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Behind the scenes */}
+      <section className="bg-background py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
+              Behind the Scenes
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              On the ice, in the studio, and everywhere in between.
+            </p>
+          </div>
+          <PhotoGallery photos={homeGallery} className="mt-12" />
+        </div>
+      </section>
+
+
+
       {/* Guest nomination banner */}
       <section className="bg-secondary">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6">
