@@ -212,6 +212,10 @@
   background-image: var(--gradient-navy);
 }
 
+@utility bg-brand-gradient {
+  background-image: var(--gradient-brand);
+}
+
 @utility shadow-card {
   box-shadow: var(--shadow-card);
 }
