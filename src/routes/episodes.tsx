@@ -58,30 +58,18 @@ function LatestEpisodes() {
   const episodes = data ?? [];
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  // Auto-select the first playable episode on load.
-  useEffect(() => {
-    if (!activeId && episodes.length > 0) {
-      const first = episodes.find((e) => e.audioUrl) ?? episodes[0];
-      if (first.audioUrl) setActiveId(first.id);
-    }
-  }, [episodes, activeId]);
-
   const handlePlay = (episode: Episode) => {
-    if (episode.audioUrl) setActiveId(episode.id);
+    if (episode.audioUrl) {
+      setActiveId((current) => (current === episode.id ? null : episode.id));
+    }
   };
-
-  const activeEpisode = episodes.find((e) => e.id === activeId) ?? null;
-
 
   if (isLoading) {
     return (
-      <div className="grid gap-8 lg:grid-cols-[1fr_minmax(0,420px)]">
-        <div className="space-y-4">
-          {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-28 w-full rounded-2xl" />
-          ))}
-        </div>
-        <Skeleton className="h-[352px] w-full rounded-2xl" />
+      <div className="mx-auto max-w-2xl space-y-4">
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} className="h-28 w-full rounded-2xl" />
+        ))}
       </div>
     );
   }
@@ -115,29 +103,19 @@ function LatestEpisodes() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_minmax(0,420px)]">
-      <div className="space-y-4">
-        {episodes.map((episode) => (
-          <EpisodeCard
-            key={episode.id}
-            episode={episode}
-            isActive={episode.id === activeId}
-            onPlay={handlePlay}
-          />
-        ))}
-      </div>
-      <div className="lg:sticky lg:top-24 lg:self-start">
-        {activeEpisode ? (
-          <AudioPlayer episode={activeEpisode} />
-        ) : (
-          <div className="flex h-[200px] w-full items-center justify-center rounded-2xl bg-muted text-center text-sm text-muted-foreground">
-            Select an episode to start listening.
-          </div>
-        )}
-      </div>
+    <div className="mx-auto max-w-2xl space-y-4">
+      {episodes.map((episode) => (
+        <EpisodeCard
+          key={episode.id}
+          episode={episode}
+          isActive={episode.id === activeId}
+          onPlay={handlePlay}
+        />
+      ))}
     </div>
   );
 }
+
 
 function EpisodesPage() {
   return (
