@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as EpisodesRouteImport } from './routes/episodes'
+import { Route as BloopersRouteImport } from './routes/bloopers'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -22,6 +23,11 @@ const ShopRoute = ShopRouteImport.update({
 const EpisodesRoute = EpisodesRouteImport.update({
   id: '/episodes',
   path: '/episodes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BloopersRoute = BloopersRouteImport.update({
+  id: '/bloopers',
+  path: '/bloopers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -38,12 +44,14 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/bloopers': typeof BloopersRoute
   '/episodes': typeof EpisodesRoute
   '/shop': typeof ShopRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/bloopers': typeof BloopersRoute
   '/episodes': typeof EpisodesRoute
   '/shop': typeof ShopRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/bloopers': typeof BloopersRoute
   '/episodes': typeof EpisodesRoute
   '/shop': typeof ShopRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/episodes' | '/shop'
+  fullPaths: '/' | '/about' | '/bloopers' | '/episodes' | '/shop'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/episodes' | '/shop'
-  id: '__root__' | '/' | '/about' | '/episodes' | '/shop'
+  to: '/' | '/about' | '/bloopers' | '/episodes' | '/shop'
+  id: '__root__' | '/' | '/about' | '/bloopers' | '/episodes' | '/shop'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BloopersRoute: typeof BloopersRoute
   EpisodesRoute: typeof EpisodesRoute
   ShopRoute: typeof ShopRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/episodes'
       fullPath: '/episodes'
       preLoaderRoute: typeof EpisodesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bloopers': {
+      id: '/bloopers'
+      path: '/bloopers'
+      fullPath: '/bloopers'
+      preLoaderRoute: typeof BloopersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BloopersRoute: BloopersRoute,
   EpisodesRoute: EpisodesRoute,
   ShopRoute: ShopRoute,
 }
