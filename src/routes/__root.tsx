@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SiteHeader } from "../components/site-header";
+import { SiteFooter } from "../components/site-footer";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -77,19 +80,45 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Her Game, Her Voice | Women in Ice Hockey Podcast" },
+      {
+        name: "description",
+        content:
+          "A podcast celebrating women changing the face of ice hockey across the UK and Europe. Hosted by Emma Stigter.",
+      },
+      { name: "author", content: "Her Game, Her Voice" },
+      { property: "og:site_name", content: "Her Game, Her Voice" },
+      { property: "og:title", content: "Her Game, Her Voice | Women in Ice Hockey Podcast" },
+      {
+        property: "og:description",
+        content:
+          "Women changing the face of ice hockey, one story at a time. Honest conversations with players, captains and changemakers.",
+      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#1b2838" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "PodcastSeries",
+          name: "Her Game, Her Voice",
+          description:
+            "A podcast about women changing the face of ice hockey, hosted by Emma Stigter.",
+          url: "/",
+          webFeed: "https://open.spotify.com/show/3H4XRlV2oIFAS9u9Z5vvme",
+        }),
       },
     ],
   }),
@@ -118,8 +147,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-dvh flex-col">
+        <SiteHeader />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <SiteFooter />
+      </div>
+      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 }
