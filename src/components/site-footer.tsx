@@ -48,7 +48,7 @@ export function SiteFooter() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-sm text-white/80 transition-colors hover:text-accent"
+                    className="text-sm text-white/80 transition-colors hover:text-blush"
                   >
                     {link.label}
                   </Link>
@@ -73,7 +73,7 @@ export function SiteFooter() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
               />
-              <Button type="submit" variant="coral">
+              <Button type="submit" variant="onDark">
                 Subscribe
               </Button>
             </form>
@@ -99,8 +99,9 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-center text-sm text-white/50">
-          © 2025 Her Game, Her Voice. All rights reserved.
+        <div className="mt-12 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-center text-sm text-white/50 sm:flex-row sm:text-left">
+          <p>© 2025 Her Game, Her Voice. All rights reserved.</p>
+          <p>Web Design &amp; Development by Declan Bianchi</p>
         </div>
       </div>
     </footer>

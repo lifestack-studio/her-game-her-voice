@@ -6,7 +6,6 @@ import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
 import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
 import seasonTwo from "@/assets/season-two.jpg.asset.json";
 import studioMic from "@/assets/studio-mic.jpg.asset.json";
-import gameAction from "@/assets/game-action.webp.asset.json";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { PhotoGallery } from "@/components/photo-gallery";
@@ -57,7 +56,7 @@ const galleryPhotos = [
     tall: true,
   },
   { src: recordingJersey.url, alt: "Emma in a Stars jersey wearing headphones during a recording" },
-  { src: gameAction.url, alt: "Women's ice hockey players battling for the puck during a game" },
+  
   { src: pinkStudio.url, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
   {
     src: studioMic.url,
@@ -172,7 +171,7 @@ function AboutPage() {
           <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">
             Want to be part of the story?
           </h2>
-          <Button asChild variant="coral" size="lg">
+          <Button asChild variant="onDark" size="lg">
             <Link to="/contact">Get in Touch</Link>
           </Button>
         </div>

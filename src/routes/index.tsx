@@ -2,16 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import brandBanner from "@/assets/brand-banner.png.asset.json";
-import gameAction from "@/assets/game-action.webp.asset.json";
-import jerseyDisplay from "@/assets/jersey-display.jpg.asset.json";
-import merchDisplay from "@/assets/merch-display.jpg.asset.json";
-import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
-import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
-import studioMic from "@/assets/studio-mic.jpg.asset.json";
 import { Button } from "@/components/ui/button";
+import { PresentedBy } from "@/components/presented-by";
 import { LazyIframe } from "@/components/lazy-iframe";
-import { PhotoGallery } from "@/components/photo-gallery";
 import { SPOTIFY_SHOW_URL, SPOTIFY_EMBED_URL } from "@/lib/site";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,22 +30,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const homeGallery = [
-  {
-    src: recordingJersey.url,
-    alt: "Emma in a Stars jersey recording an episode with headphones on",
-    tall: true,
-  },
-  { src: gameAction.url, alt: "Women's ice hockey players competing for the puck on the rink" },
-  { src: jerseyDisplay.url, alt: "Signed jerseys on display at a Her Game, Her Voice event" },
-  { src: pinkStudio.url, alt: "Emma outside the pink Her Game, Her Voice podcast studio" },
-  {
-    src: merchDisplay.url,
-    alt: "Hockey sticks and a jersey displayed beside the podcast screens",
-    tall: true,
-  },
-  { src: studioMic.url, alt: "Close-up of the studio microphone setup during a recording" },
-];
+
 
 function HomePage() {
   return (
@@ -71,13 +51,14 @@ function HomePage() {
             <h1 className="font-display text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl">
               Her Game,
               <br />
-              <span className="text-accent">Her Voice</span>
+              <span className="text-blush">Her Voice</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-secondary sm:text-2xl">
               Women changing the face of ice hockey, one story at a time.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button asChild variant="coral" size="xl">
+              <Button asChild variant="teal" size="xl">
+
                 <a href={SPOTIFY_SHOW_URL} target="_blank" rel="noopener noreferrer">
                   Listen on Spotify
                 </a>
@@ -91,7 +72,7 @@ function HomePage() {
       </section>
 
       {/* Brand banner strip */}
-      <section className="bg-[#f4dce9]">
+      <section className="bg-blush">
         <img
           src={brandBanner.url}
           alt="Her Game, Her Voice — Leading the conversation in Womens Ice Hockey"
@@ -151,20 +132,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Behind the scenes */}
-      <section className="bg-background py-20 sm:py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="text-center">
-            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
-              Behind the Scenes
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              On the ice, in the studio, and everywhere in between.
-            </p>
-          </div>
-          <PhotoGallery photos={homeGallery} className="mt-12" />
-        </div>
-      </section>
+
 
 
 
@@ -183,6 +151,9 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Presenting partner */}
+      <PresentedBy />
+
       {/* Sponsors */}
       <section className="bg-navy-gradient">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6">
@@ -193,11 +164,12 @@ function HomePage() {
             Interested in sponsoring the podcast or collaborating on events? We’d love to hear
             from you.
           </p>
-          <Button asChild variant="coral" size="lg">
+          <Button asChild variant="onDark" size="lg">
             <Link to="/contact">Sponsorship Enquiries</Link>
           </Button>
         </div>
       </section>
+
     </>
   );
 }
