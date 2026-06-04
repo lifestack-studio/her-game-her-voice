@@ -1,29 +1,26 @@
-# Her Game, Her Voice — Hostinger VPS / Docker Manager deployment.
+# Her Game, Her Voice — Hostinger Docker Manager deployment.
 #
-# This pulls a prebuilt PUBLIC image from GHCR (published by CI on every push to
-# main) — it does NOT build locally. Start with:
-#   docker compose up -d
+# Pulls the prebuilt PUBLIC image published to GHCR by CI
+# (.github/workflows/docker-publish.yml on every push to main). It does NOT
+# build locally. The app is stateless — no database, cache, or queue; it only
+# reads an external podcast RSS feed at runtime via PODCAST_RSS_URL.
 #
-# The app is stateless: no database, cache, or queue. It only reads an external
-# podcast RSS feed at runtime via PODCAST_RSS_URL (see .env.example).
-name: her-game-her-voice
-
+# Kept intentionally minimal for Docker Manager compatibility (no top-level
+# `name`, `pull_policy`, or `container_name`, which some managed/older Compose
+# runners reject).
 services:
   web:
     image: ghcr.io/lifestack-studio/her-game-her-voice:latest
-    # Always fetch the newest published image on `up`/`pull`.
-    pull_policy: always
-    container_name: her-game-her-voice-web
     restart: unless-stopped
     ports:
       # host:container — change the left side if 3000 is taken on the VPS.
       - "3000:3000"
     environment:
       NODE_ENV: production
-      # The server binds 0.0.0.0:$PORT so it is reachable from outside the container.
+      # Server binds 0.0.0.0:$PORT so it is reachable from outside the container.
       PORT: "3000"
       HOST: "0.0.0.0"
-      # Powers /api/podcast/latest. Set in a .env file next to this compose file
-      # (copy .env.example) or as a Docker Manager environment variable. Left
-      # empty, the endpoint returns 503 but the site still runs.
+      # Powers /api/podcast/latest. Set as a Docker Manager environment variable
+      # (or in a .env file). Left empty, that endpoint returns 503 but the site
+      # still runs.
       PODCAST_RSS_URL: "${PODCAST_RSS_URL:-}"
