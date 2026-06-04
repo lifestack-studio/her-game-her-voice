@@ -31,7 +31,6 @@ export function AudioPlayer({ episode }: AudioPlayerProps) {
         aria-label={`Audio player for ${episode.name}`}
       >
         <source src={episode.audioUrl} type="audio/mpeg" />
-        Your browser does not support the audio element.
       </audio>
     </div>
   );
