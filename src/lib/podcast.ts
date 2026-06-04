@@ -15,10 +15,9 @@ export interface Episode {
  * Fetch the latest episodes from our own backend.
  *
  * The frontend never talks to Spotify directly — the backend endpoint
- * `GET /api/podcast/latest` is responsible for using Spotify credentials
- * server-side and returning the shape above. In this project that endpoint
- * is implemented as a TanStack server route (src/routes/api/podcast/latest.ts),
- * but it can be swapped for any backend that honours the same contract.
+ * `GET /api/podcast/latest` reads the show's RSS feed server-side (via the
+ * `PODCAST_RSS_URL` secret) and returns the shape above. It can be swapped
+ * for any backend that honours the same contract.
  */
 export async function fetchLatestEpisodes(): Promise<Episode[]> {
   const res = await fetch("/api/podcast/latest", {
