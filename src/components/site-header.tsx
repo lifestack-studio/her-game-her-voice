@@ -42,7 +42,7 @@ export function SiteHeader() {
             className="inline-flex transition-opacity hover:opacity-80"
           >
             <img
-              src={lifestackWhite.url}
+              src={lifestackWhite}
               alt="lifestack"
               width={1328}
               height={248}

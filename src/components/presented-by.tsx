@@ -23,7 +23,7 @@ export function PresentedBy() {
           className="inline-flex transition-opacity hover:opacity-80"
         >
           <img
-            src={lifestackColour.url}
+            src={lifestackColour}
             alt="lifestack"
             width={1328}
             height={248}

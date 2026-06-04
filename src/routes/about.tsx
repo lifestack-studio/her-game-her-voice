@@ -51,19 +51,19 @@ const pillars = [
 
 const galleryPhotos = [
   {
-    src: studioBranding.url,
+    src: studioBranding,
     alt: "Emma Stigter recording in front of the Her Game, Her Voice branded studio wall",
     tall: true,
   },
-  { src: recordingJersey.url, alt: "Emma in a Stars jersey wearing headphones during a recording" },
+  { src: recordingJersey, alt: "Emma in a Stars jersey wearing headphones during a recording" },
   
-  { src: pinkStudio.url, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
+  { src: pinkStudio, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
   {
-    src: studioMic.url,
+    src: studioMic,
     alt: "Behind the scenes at the Her Game, Her Voice studio with a RODE microphone",
     tall: true,
   },
-  { src: seasonTwo.url, alt: "Emma warming up for season two of the podcast" },
+  { src: seasonTwo, alt: "Emma warming up for season two of the podcast" },
 ];
 
 function AboutPage() {
@@ -78,7 +78,7 @@ function AboutPage() {
             <div className="relative">
               <div className="aspect-square w-64 overflow-hidden rounded-full border-[6px] border-secondary shadow-card md:w-80">
                 <img
-                  src={emmaHeadshot.url}
+                  src={emmaHeadshot}
                   alt="Emma Stigter, founder and host of Her Game, Her Voice"
                   width={800}
                   height={800}
