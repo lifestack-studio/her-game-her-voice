@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mic, Users, ShieldCheck } from "lucide-react";
-import emmaImg from "@/assets/emma.jpg";
+import emmaHeadshot from "@/assets/emma-headshot.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 
@@ -55,7 +55,7 @@ function AboutPage() {
             <div className="relative">
               <div className="aspect-square w-64 overflow-hidden rounded-full border-[6px] border-secondary shadow-card md:w-80">
                 <img
-                  src={emmaImg}
+                  src={emmaHeadshot.url}
                   alt="Emma Stigter, founder and host of Her Game, Her Voice"
                   width={800}
                   height={800}
