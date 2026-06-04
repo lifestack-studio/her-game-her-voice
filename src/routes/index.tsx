@@ -150,6 +150,9 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Presenting partner */}
+      <PresentedBy />
+
       {/* Sponsors */}
       <section className="bg-navy-gradient">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6">
@@ -160,11 +163,12 @@ function HomePage() {
             Interested in sponsoring the podcast or collaborating on events? We’d love to hear
             from you.
           </p>
-          <Button asChild variant="coral" size="lg">
+          <Button asChild variant="onDark" size="lg">
             <Link to="/contact">Sponsorship Enquiries</Link>
           </Button>
         </div>
       </section>
+
     </>
   );
 }
