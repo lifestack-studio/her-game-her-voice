@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
 import { NAV_LINKS, SPOTIFY_SHOW_URL } from "@/lib/site";
+import lifestackWhite from "@/assets/lifestack-white.png.asset.json";
+
+const LIFESTACK_URL = "https://lifestack.studio";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,18 +27,42 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? "border-b border-border bg-background/80 backdrop-blur-md shadow-sm"
-          : "bg-background/40 backdrop-blur-sm"
-      }`}
-    >
+    <header className="sticky top-0 z-50 w-full">
+      {/* Presenter strip */}
+      <div className="bg-accent text-white">
+        <div className="mx-auto flex h-9 max-w-6xl items-center justify-center gap-2 px-4 text-xs sm:px-6">
+          <span className="font-medium tracking-wide text-white/90">
+            Her Game, Her Voice is brought to you by
+          </span>
+          <a
+            href={LIFESTACK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="lifestack — opens in a new tab"
+            className="inline-flex transition-opacity hover:opacity-80"
+          >
+            <img
+              src={lifestackWhite.url}
+              alt="lifestack"
+              width={1328}
+              height={248}
+              className="h-3.5 w-auto"
+            />
+          </a>
+        </div>
+      </div>
+
       <nav
         aria-label="Primary"
-        className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6"
+        className={`w-full transition-all duration-300 ${
+          scrolled
+            ? "border-b border-border bg-background/80 backdrop-blur-md shadow-sm"
+            : "bg-background/40 backdrop-blur-sm"
+        }`}
       >
-        <Logo />
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+          <Logo />
+
 
         <ul className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (
