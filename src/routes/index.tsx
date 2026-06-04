@@ -66,6 +66,18 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Brand banner strip */}
+      <section className="bg-[#f4dce9]">
+        <img
+          src={brandBanner.url}
+          alt="Her Game, Her Voice — Leading the conversation in Womens Ice Hockey"
+          width={1900}
+          height={628}
+          loading="lazy"
+          className="mx-auto h-auto w-full max-w-[1900px]"
+        />
+      </section>
+
       {/* Mission statement */}
       <section className="bg-background py-20 sm:py-24">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
