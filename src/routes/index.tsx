@@ -29,22 +29,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const homeGallery = [
-  {
-    src: recordingJersey.url,
-    alt: "Emma in a Stars jersey recording an episode with headphones on",
-    tall: true,
-  },
-  { src: gameAction.url, alt: "Women's ice hockey players competing for the puck on the rink" },
-  { src: jerseyDisplay.url, alt: "Signed jerseys on display at a Her Game, Her Voice event" },
-  { src: pinkStudio.url, alt: "Emma outside the pink Her Game, Her Voice podcast studio" },
-  {
-    src: merchDisplay.url,
-    alt: "Hockey sticks and a jersey displayed beside the podcast screens",
-    tall: true,
-  },
-  { src: studioMic.url, alt: "Close-up of the studio microphone setup during a recording" },
-];
+
 
 function HomePage() {
   return (
