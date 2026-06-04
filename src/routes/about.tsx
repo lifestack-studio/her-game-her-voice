@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mic, Users, ShieldCheck } from "lucide-react";
 import emmaHeadshot from "@/assets/emma-headshot.png.asset.json";
+import studioBranding from "@/assets/studio-branding.jpg.asset.json";
+import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
+import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
+import seasonTwo from "@/assets/season-two.jpg.asset.json";
+import studioMic from "@/assets/studio-mic.jpg.asset.json";
+import gameAction from "@/assets/game-action.webp.asset.json";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
+import { PhotoGallery } from "@/components/photo-gallery";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -41,6 +48,23 @@ const pillars = [
     title: "Break Barriers",
     text: "Challenge the ‘girls can’t play’ narrative.",
   },
+];
+
+const galleryPhotos = [
+  {
+    src: studioBranding.url,
+    alt: "Emma Stigter recording in front of the Her Game, Her Voice branded studio wall",
+    tall: true,
+  },
+  { src: recordingJersey.url, alt: "Emma in a Stars jersey wearing headphones during a recording" },
+  { src: gameAction.url, alt: "Women's ice hockey players battling for the puck during a game" },
+  { src: pinkStudio.url, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
+  {
+    src: studioMic.url,
+    alt: "Behind the scenes at the Her Game, Her Voice studio with a RODE microphone",
+    tall: true,
+  },
+  { src: seasonTwo.url, alt: "Emma warming up for season two of the podcast" },
 ];
 
 function AboutPage() {
@@ -100,6 +124,24 @@ function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Behind the scenes gallery */}
+      <section className="bg-background py-20 sm:py-24">
+
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
+              Behind the Mic
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              From the rink to the studio — moments from the journey so far.
+            </p>
+          </div>
+          <PhotoGallery photos={galleryPhotos} className="mt-12" />
+        </div>
+      </section>
+
+
 
       {/* Mission pillars */}
       <section className="bg-secondary/20 py-20 sm:py-24">

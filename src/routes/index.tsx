@@ -2,8 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import brandBanner from "@/assets/brand-banner.png.asset.json";
+import gameAction from "@/assets/game-action.webp.asset.json";
+import jerseyDisplay from "@/assets/jersey-display.jpg.asset.json";
+import merchDisplay from "@/assets/merch-display.jpg.asset.json";
+import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
+import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
+import studioMic from "@/assets/studio-mic.jpg.asset.json";
 import { Button } from "@/components/ui/button";
 import { LazyIframe } from "@/components/lazy-iframe";
+import { PhotoGallery } from "@/components/photo-gallery";
 import { SPOTIFY_SHOW_URL, SPOTIFY_EMBED_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
@@ -27,6 +34,23 @@ export const Route = createFileRoute("/")({
   }),
   component: HomePage,
 });
+
+const homeGallery = [
+  {
+    src: recordingJersey.url,
+    alt: "Emma in a Stars jersey recording an episode with headphones on",
+    tall: true,
+  },
+  { src: gameAction.url, alt: "Women's ice hockey players competing for the puck on the rink" },
+  { src: jerseyDisplay.url, alt: "Signed jerseys on display at a Her Game, Her Voice event" },
+  { src: pinkStudio.url, alt: "Emma outside the pink Her Game, Her Voice podcast studio" },
+  {
+    src: merchDisplay.url,
+    alt: "Hockey sticks and a jersey displayed beside the podcast screens",
+    tall: true,
+  },
+  { src: studioMic.url, alt: "Close-up of the studio microphone setup during a recording" },
+];
 
 function HomePage() {
   return (
@@ -126,6 +150,23 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Behind the scenes */}
+      <section className="bg-background py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
+              Behind the Scenes
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              On the ice, in the studio, and everywhere in between.
+            </p>
+          </div>
+          <PhotoGallery photos={homeGallery} className="mt-12" />
+        </div>
+      </section>
+
+
 
       {/* Guest nomination banner */}
       <section className="bg-secondary">
