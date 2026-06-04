@@ -3,6 +3,7 @@ import { ArrowRight, Quote } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
 import brandBanner from "@/assets/brand-banner.png.asset.json";
 import { Button } from "@/components/ui/button";
+import { PresentedBy } from "@/components/presented-by";
 import { LazyIframe } from "@/components/lazy-iframe";
 import { SPOTIFY_SHOW_URL, SPOTIFY_EMBED_URL } from "@/lib/site";
 
