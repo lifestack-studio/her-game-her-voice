@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mic, Users, ShieldCheck } from "lucide-react";
-import emmaHeadshot from "@/assets/emma-headshot.png.asset.json";
-import studioBranding from "@/assets/studio-branding.jpg.asset.json";
-import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
-import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
-import seasonTwo from "@/assets/season-two.jpg.asset.json";
-import studioMic from "@/assets/studio-mic.jpg.asset.json";
+import emmaHeadshot from "@/assets/emma-headshot.png";
+import studioBranding from "@/assets/studio-branding.jpg";
+import recordingJersey from "@/assets/recording-jersey.jpg";
+import pinkStudio from "@/assets/pink-studio.jpg";
+import seasonTwo from "@/assets/season-two.jpg";
+import studioMic from "@/assets/studio-mic.jpg";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { PhotoGallery } from "@/components/photo-gallery";

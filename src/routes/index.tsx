@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote } from "lucide-react";
 import heroImg from "@/assets/hero.jpg";
-import brandBanner from "@/assets/brand-banner.png.asset.json";
+import brandBanner from "@/assets/brand-banner.png";
 import { Button } from "@/components/ui/button";
 import { PresentedBy } from "@/components/presented-by";
 import { LazyIframe } from "@/components/lazy-iframe";

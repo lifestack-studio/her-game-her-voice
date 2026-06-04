@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import lifestackColour from "@/assets/lifestack-colour.png.asset.json";
+import lifestackColour from "@/assets/lifestack-colour.png";
 
 const LIFESTACK_URL = "https://lifestack.studio";
 
