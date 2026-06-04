@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import logoDark from "@/assets/logo.png.asset.json";
-import logoLight from "@/assets/logo-light.png.asset.json";
+import logoDark from "@/assets/logo.png";
+import logoLight from "@/assets/logo-light.png";
 
 interface LogoProps {
   className?: string;
@@ -9,7 +9,7 @@ interface LogoProps {
 
 /** Brand wordmark logo for "Her Game, Her Voice". */
 export function Logo({ className, variant = "dark" }: LogoProps) {
-  const src = variant === "light" ? logoLight.url : logoDark.url;
+  const src = variant === "light" ? logoLight : logoDark;
   return (
     <Link
       to="/"

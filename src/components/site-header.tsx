@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
 import { NAV_LINKS, SPOTIFY_SHOW_URL } from "@/lib/site";
-import lifestackWhite from "@/assets/lifestack-white.png.asset.json";
+import lifestackWhite from "@/assets/lifestack-white.png";
 
 const LIFESTACK_URL = "https://lifestack.studio";
 
@@ -42,7 +42,7 @@ export function SiteHeader() {
             className="inline-flex transition-opacity hover:opacity-80"
           >
             <img
-              src={lifestackWhite.url}
+              src={lifestackWhite}
               alt="lifestack"
               width={1328}
               height={248}

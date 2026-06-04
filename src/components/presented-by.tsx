@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import lifestackColour from "@/assets/lifestack-colour.png.asset.json";
+import lifestackColour from "@/assets/lifestack-colour.png";
 
 const LIFESTACK_URL = "https://lifestack.studio";
 
@@ -23,7 +23,7 @@ export function PresentedBy() {
           className="inline-flex transition-opacity hover:opacity-80"
         >
           <img
-            src={lifestackColour.url}
+            src={lifestackColour}
             alt="lifestack"
             width={1328}
             height={248}

@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mic, Users, ShieldCheck } from "lucide-react";
-import emmaHeadshot from "@/assets/emma-headshot.png.asset.json";
-import studioBranding from "@/assets/studio-branding.jpg.asset.json";
-import recordingJersey from "@/assets/recording-jersey.jpg.asset.json";
-import pinkStudio from "@/assets/pink-studio.jpg.asset.json";
-import seasonTwo from "@/assets/season-two.jpg.asset.json";
-import studioMic from "@/assets/studio-mic.jpg.asset.json";
+import emmaHeadshot from "@/assets/emma-headshot.png";
+import studioBranding from "@/assets/studio-branding.jpg";
+import recordingJersey from "@/assets/recording-jersey.jpg";
+import pinkStudio from "@/assets/pink-studio.jpg";
+import seasonTwo from "@/assets/season-two.jpg";
+import studioMic from "@/assets/studio-mic.jpg";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { PhotoGallery } from "@/components/photo-gallery";
@@ -51,19 +51,19 @@ const pillars = [
 
 const galleryPhotos = [
   {
-    src: studioBranding.url,
+    src: studioBranding,
     alt: "Emma Stigter recording in front of the Her Game, Her Voice branded studio wall",
     tall: true,
   },
-  { src: recordingJersey.url, alt: "Emma in a Stars jersey wearing headphones during a recording" },
+  { src: recordingJersey, alt: "Emma in a Stars jersey wearing headphones during a recording" },
   
-  { src: pinkStudio.url, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
+  { src: pinkStudio, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
   {
-    src: studioMic.url,
+    src: studioMic,
     alt: "Behind the scenes at the Her Game, Her Voice studio with a RODE microphone",
     tall: true,
   },
-  { src: seasonTwo.url, alt: "Emma warming up for season two of the podcast" },
+  { src: seasonTwo, alt: "Emma warming up for season two of the podcast" },
 ];
 
 function AboutPage() {
@@ -78,7 +78,7 @@ function AboutPage() {
             <div className="relative">
               <div className="aspect-square w-64 overflow-hidden rounded-full border-[6px] border-secondary shadow-card md:w-80">
                 <img
-                  src={emmaHeadshot.url}
+                  src={emmaHeadshot}
                   alt="Emma Stigter, founder and host of Her Game, Her Voice"
                   width={800}
                   height={800}
