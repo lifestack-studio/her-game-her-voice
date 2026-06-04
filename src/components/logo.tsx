@@ -1,29 +1,28 @@
 import { Link } from "@tanstack/react-router";
+import logoDark from "@/assets/logo.png.asset.json";
+import logoLight from "@/assets/logo-light.png.asset.json";
 
 interface LogoProps {
   className?: string;
   variant?: "light" | "dark";
 }
 
-/**
- * Wordmark logo. Replace with uploaded image asset when available:
- * import logo from "@/assets/logo.png"; <img src={logo} ... />
- */
+/** Brand wordmark logo for "Her Game, Her Voice". */
 export function Logo({ className, variant = "dark" }: LogoProps) {
-  const text = variant === "light" ? "text-white" : "text-primary";
+  const src = variant === "light" ? logoLight.url : logoDark.url;
   return (
     <Link
       to="/"
       aria-label="Her Game, Her Voice — home"
-      className={`group inline-flex items-center gap-2.5 ${className ?? ""}`}
+      className={`inline-flex items-center ${className ?? ""}`}
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground font-display text-lg font-bold leading-none shadow-sm">
-        H
-      </span>
-      <span className={`font-display text-lg font-bold leading-tight tracking-tight ${text}`}>
-        Her Game,
-        <span className="text-accent"> Her Voice</span>
-      </span>
+      <img
+        src={src}
+        alt="Her Game, Her Voice"
+        width={272}
+        height={280}
+        className="h-11 w-auto"
+      />
     </Link>
   );
 }
