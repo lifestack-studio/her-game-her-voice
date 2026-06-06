@@ -45,7 +45,7 @@ const platforms = [
   },
   {
     label: "YouTube",
-    href: "https://youtube.com/@hergamehervoice",
+    href: "https://www.youtube.com",
     Icon: Youtube,
     className: "bg-[#FF0000] text-white hover:brightness-95",
   },
