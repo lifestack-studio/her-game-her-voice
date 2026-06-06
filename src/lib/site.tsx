@@ -42,7 +42,7 @@ export const SOCIAL_LINKS: {
 }[] = [
   { label: "Instagram", href: "https://www.instagram.com/hghvpodcast", Icon: Instagram },
   { label: "X (Twitter)", href: "https://x.com/hergamehervoice", Icon: XIcon },
-  { label: "LinkedIn", href: "https://linkedin.com/company/hergamehervoice", Icon: Linkedin },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/her-game-her-voice", Icon: Linkedin },
   { label: "Facebook", href: "https://facebook.com/hergamehervoice", Icon: Facebook },
   { label: "YouTube", href: "https://youtube.com/@hergamehervoice", Icon: Youtube },
   { label: "TikTok", href: "https://www.tiktok.com/@hghvpodcast", Icon: TikTokIcon },
