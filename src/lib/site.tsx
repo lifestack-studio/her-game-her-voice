@@ -44,7 +44,7 @@ export const SOCIAL_LINKS: {
   { label: "X (Twitter)", href: "https://x.com", Icon: XIcon },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/her-game-her-voice", Icon: Linkedin },
   { label: "Facebook", href: "https://www.facebook.com", Icon: Facebook },
-  { label: "YouTube", href: "https://youtube.com/@hergamehervoice", Icon: Youtube },
+  { label: "YouTube", href: "https://www.youtube.com", Icon: Youtube },
   { label: "TikTok", href: "https://www.tiktok.com/@hghvpodcast", Icon: TikTokIcon },
 ];
 
