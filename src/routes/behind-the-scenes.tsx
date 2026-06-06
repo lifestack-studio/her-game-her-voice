@@ -18,9 +18,9 @@ export const Route = createFileRoute("/behind-the-scenes")({
         property: "og:description",
         content: "The moments between the moments — bloopers and behind-the-scenes footage.",
       },
-      { property: "og:url", content: "/bloopers" },
+      { property: "og:url", content: "/behind-the-scenes" },
     ],
-    links: [{ rel: "canonical", href: "/bloopers" }],
+    links: [{ rel: "canonical", href: "/behind-the-scenes" }],
   }),
   component: BloopersPage,
 });
