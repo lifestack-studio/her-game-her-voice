@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { LazyIframe } from "@/components/lazy-iframe";
 
-export const Route = createFileRoute("/bloopers")({
+export const Route = createFileRoute("/behind-the-scenes")({
   head: () => ({
     meta: [
       { title: "Behind the Scenes | Her Game, Her Voice" },
@@ -18,9 +18,9 @@ export const Route = createFileRoute("/bloopers")({
         property: "og:description",
         content: "The moments between the moments — bloopers and behind-the-scenes footage.",
       },
-      { property: "og:url", content: "/bloopers" },
+      { property: "og:url", content: "/behind-the-scenes" },
     ],
-    links: [{ rel: "canonical", href: "/bloopers" }],
+    links: [{ rel: "canonical", href: "/behind-the-scenes" }],
   }),
   component: BloopersPage,
 });

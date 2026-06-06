@@ -13,7 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as EpisodesRouteImport } from './routes/episodes'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BloopersRouteImport } from './routes/bloopers'
+import { Route as BehindTheScenesRouteImport } from './routes/behind-the-scenes'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPodcastLatestRouteImport } from './routes/api/podcast/latest'
@@ -38,9 +38,9 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BloopersRoute = BloopersRouteImport.update({
-  id: '/bloopers',
-  path: '/bloopers',
+const BehindTheScenesRoute = BehindTheScenesRouteImport.update({
+  id: '/behind-the-scenes',
+  path: '/behind-the-scenes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -62,7 +62,7 @@ const ApiPodcastLatestRoute = ApiPodcastLatestRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/bloopers': typeof BloopersRoute
+  '/behind-the-scenes': typeof BehindTheScenesRoute
   '/contact': typeof ContactRoute
   '/episodes': typeof EpisodesRoute
   '/shop': typeof ShopRoute
@@ -72,7 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/bloopers': typeof BloopersRoute
+  '/behind-the-scenes': typeof BehindTheScenesRoute
   '/contact': typeof ContactRoute
   '/episodes': typeof EpisodesRoute
   '/shop': typeof ShopRoute
@@ -83,7 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/bloopers': typeof BloopersRoute
+  '/behind-the-scenes': typeof BehindTheScenesRoute
   '/contact': typeof ContactRoute
   '/episodes': typeof EpisodesRoute
   '/shop': typeof ShopRoute
@@ -95,7 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/bloopers'
+    | '/behind-the-scenes'
     | '/contact'
     | '/episodes'
     | '/shop'
@@ -105,7 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/bloopers'
+    | '/behind-the-scenes'
     | '/contact'
     | '/episodes'
     | '/shop'
@@ -115,7 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/bloopers'
+    | '/behind-the-scenes'
     | '/contact'
     | '/episodes'
     | '/shop'
@@ -126,7 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  BloopersRoute: typeof BloopersRoute
+  BehindTheScenesRoute: typeof BehindTheScenesRoute
   ContactRoute: typeof ContactRoute
   EpisodesRoute: typeof EpisodesRoute
   ShopRoute: typeof ShopRoute
@@ -164,11 +164,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bloopers': {
-      id: '/bloopers'
-      path: '/bloopers'
-      fullPath: '/bloopers'
-      preLoaderRoute: typeof BloopersRouteImport
+    '/behind-the-scenes': {
+      id: '/behind-the-scenes'
+      path: '/behind-the-scenes'
+      fullPath: '/behind-the-scenes'
+      preLoaderRoute: typeof BehindTheScenesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -198,7 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  BloopersRoute: BloopersRoute,
+  BehindTheScenesRoute: BehindTheScenesRoute,
   ContactRoute: ContactRoute,
   EpisodesRoute: EpisodesRoute,
   ShopRoute: ShopRoute,
