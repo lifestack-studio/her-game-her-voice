@@ -7,7 +7,7 @@ import { LazyIframe } from "@/components/lazy-iframe";
 export const Route = createFileRoute("/bloopers")({
   head: () => ({
     meta: [
-      { title: "Bloopers & B-Roll | Her Game, Her Voice" },
+      { title: "Behind the Scenes | Her Game, Her Voice" },
       {
         name: "description",
         content:
