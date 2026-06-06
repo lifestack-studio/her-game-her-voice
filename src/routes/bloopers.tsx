@@ -13,7 +13,7 @@ export const Route = createFileRoute("/bloopers")({
         content:
           "The moments between the moments. Watch bloopers and behind-the-scenes B-roll from the Her Game, Her Voice podcast.",
       },
-      { property: "og:title", content: "Bloopers & B-Roll | Her Game, Her Voice" },
+      { property: "og:title", content: "Behind the Scenes | Her Game, Her Voice" },
       {
         property: "og:description",
         content: "The moments between the moments — bloopers and behind-the-scenes footage.",
@@ -62,7 +62,7 @@ const videos: Video[] = [
 function BloopersPage() {
   return (
     <>
-      <PageHero title="Bloopers & B-Roll" subtitle="The moments between the moments">
+      <PageHero title="Behind the Scenes" subtitle="The moments between the moments">
         <p className="mt-3 max-w-xl text-white/70">
           Not everything makes the final cut… and that’s probably a good thing.
         </p>
