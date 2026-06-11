@@ -11,99 +11,97 @@ export const Route = createFileRoute("/behind-the-scenes")({
       {
         name: "description",
         content:
-          "The moments between the moments. Watch bloopers and behind-the-scenes B-roll from the Her Game, Her Voice podcast.",
+          "The moments between the moments. Watch the latest behind-the-scenes TikTok clips from the Her Game, Her Voice podcast.",
       },
       { property: "og:title", content: "Behind the Scenes | Her Game, Her Voice" },
       {
         property: "og:description",
-        content: "The moments between the moments — bloopers and behind-the-scenes footage.",
+        content: "The moments between the moments — the latest behind-the-scenes TikTok clips.",
       },
       { property: "og:url", content: "/behind-the-scenes" },
     ],
     links: [{ rel: "canonical", href: "/behind-the-scenes" }],
   }),
-  component: BloopersPage,
+  component: BehindTheScenesPage,
 });
 
 /**
- * Convert a YouTube or Vimeo watch URL into an embeddable iframe URL.
- * Admin: add videos to the `videos` array below using normal share URLs.
+ * Extract the numeric TikTok video ID from a standard video URL, e.g.
+ *   https://www.tiktok.com/@hghvpodcast/video/7311234567890123456
+ * Returns null for links we can't parse (e.g. short vm.tiktok.com URLs).
  */
-function toEmbedUrl(url: string): string | null {
-  try {
-    const u = new URL(url);
-    if (u.hostname.includes("youtu.be")) {
-      return `https://www.youtube.com/embed/${u.pathname.slice(1)}`;
-    }
-    if (u.hostname.includes("youtube.com")) {
-      const id = u.searchParams.get("v");
-      return id ? `https://www.youtube.com/embed/${id}` : null;
-    }
-    if (u.hostname.includes("vimeo.com")) {
-      const id = u.pathname.split("/").filter(Boolean).pop();
-      return id ? `https://player.vimeo.com/video/${id}` : null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+function getTikTokId(url: string): string | null {
+  const match = url.match(/\/video\/(\d+)/);
+  return match ? match[1] : null;
 }
 
-type Video = { title: string; description?: string; url?: string };
-
-// Admin: paste YouTube/Vimeo URLs here to publish clips.
-const videos: Video[] = [
-  { title: "Coming Soon" },
-  { title: "Coming Soon" },
-  { title: "Coming Soon" },
-  { title: "Coming Soon" },
+/**
+ * ADMIN: Paste TikTok video URLs here, NEWEST FIRST.
+ * Only the first three are shown on the page.
+ * Use full URLs like:
+ *   https://www.tiktok.com/@hghvpodcast/video/7311234567890123456
+ */
+const TIKTOK_VIDEO_URLS: string[] = [
+  // "https://www.tiktok.com/@hghvpodcast/video/0000000000000000000",
 ];
 
-function BloopersPage() {
+function BehindTheScenesPage() {
+  const videos = TIKTOK_VIDEO_URLS.slice(0, 3)
+    .map((url) => ({ url, id: getTikTokId(url) }))
+    .filter((v): v is { url: string; id: string } => v.id !== null);
+
   return (
     <>
       <PageHero title="Behind the Scenes" subtitle="The moments between the moments">
         <p className="mt-3 max-w-xl text-white/70">
-          Not everything makes the final cut… and that’s probably a good thing.
+          Not everything makes the final cut… and that’s probably a good thing. Catch our latest
+          clips straight from TikTok.
         </p>
       </PageHero>
 
       <section className="bg-background py-20 sm:py-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="grid gap-8 md:grid-cols-2">
-            {videos.map((video, i) => {
-              const embed = video.url ? toEmbedUrl(video.url) : null;
-              return (
+          {videos.length > 0 ? (
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {videos.map((video) => (
                 <article
-                  key={`${video.title}-${i}`}
+                  key={video.id}
                   className="overflow-hidden rounded-2xl bg-card shadow-card"
                 >
-                  {embed ? (
-                    <LazyIframe
-                      src={embed}
-                      title={video.title}
-                      height="100%"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      className="aspect-video w-full"
-                    />
-                  ) : (
-                    <div className="flex aspect-video w-full flex-col items-center justify-center gap-3 bg-navy-gradient text-white/70">
-                      <Film className="size-9" aria-hidden="true" />
-                      <span className="font-display text-sm font-semibold uppercase tracking-wide">
-                        Coming Soon
-                      </span>
-                    </div>
-                  )}
-                  <div className="p-5">
-                    <h2 className="font-display text-lg font-bold text-primary">{video.title}</h2>
-                    {video.description && (
-                      <p className="mt-1 text-sm text-muted-foreground">{video.description}</p>
-                    )}
-                  </div>
+                  <LazyIframe
+                    src={`https://www.tiktok.com/embed/v2/${video.id}`}
+                    title="TikTok video"
+                    height="100%"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    className="aspect-[9/16] w-full"
+                  />
                 </article>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 rounded-2xl bg-navy-gradient px-8 py-16 text-center text-white/70">
+              <Film className="size-9" aria-hidden="true" />
+              <span className="font-display text-sm font-semibold uppercase tracking-wide">
+                Clips Coming Soon
+              </span>
+              <p className="text-sm text-white/60">
+                Fresh behind-the-scenes moments are on the way.
+              </p>
+            </div>
+          )}
+
+          <p className="mt-10 text-center text-sm text-muted-foreground">
+            Follow{" "}
+            <a
+              href="https://www.tiktok.com/@hghvpodcast"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-secondary-foreground underline underline-offset-4"
+            >
+              @hghvpodcast
+            </a>{" "}
+            on TikTok for everything in between.
+          </p>
         </div>
       </section>
 
