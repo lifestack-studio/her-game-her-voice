@@ -46,6 +46,7 @@ const TIKTOK_VIDEO_URLS: string[] = [
   "https://www.tiktok.com/@hghvpodcast/video/7617891931233848598?is_from_webapp=1&sender_device=pc",
   "https://www.tiktok.com/@hghvpodcast/video/7617851906299350294?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094",
   "https://www.tiktok.com/@hghvpodcast/video/7617820371462524182?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094",
+  "https://www.tiktok.com/@hghvpodcast/video/7617471982342343958?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094",
 ];
 
 function BehindTheScenesPage() {
@@ -57,8 +58,8 @@ function BehindTheScenesPage() {
     <>
       <PageHero title="Behind the Scenes" subtitle="The moments between the moments">
         <p className="mt-3 max-w-xl text-white/70">
-          Not everything makes the final cut… and that’s probably a good thing. Catch our latest
-          clips straight from TikTok.
+          Not everything makes the final cut… and that’s probably a good thing. Catch our latest clips straight from
+          TikTok.
         </p>
       </PageHero>
 
@@ -67,10 +68,7 @@ function BehindTheScenesPage() {
           {videos.length > 0 ? (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {videos.map((video) => (
-                <article
-                  key={video.id}
-                  className="overflow-hidden rounded-2xl bg-card shadow-card"
-                >
+                <article key={video.id} className="overflow-hidden rounded-2xl bg-card shadow-card">
                   <LazyIframe
                     src={`https://www.tiktok.com/embed/v2/${video.id}`}
                     title="TikTok video"
@@ -84,12 +82,8 @@ function BehindTheScenesPage() {
           ) : (
             <div className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 rounded-2xl bg-navy-gradient px-8 py-16 text-center text-white/70">
               <Film className="size-9" aria-hidden="true" />
-              <span className="font-display text-sm font-semibold uppercase tracking-wide">
-                Clips Coming Soon
-              </span>
-              <p className="text-sm text-white/60">
-                Fresh behind-the-scenes moments are on the way.
-              </p>
+              <span className="font-display text-sm font-semibold uppercase tracking-wide">Clips Coming Soon</span>
+              <p className="text-sm text-white/60">Fresh behind-the-scenes moments are on the way.</p>
             </div>
           )}
 
@@ -110,9 +104,7 @@ function BehindTheScenesPage() {
 
       <section className="bg-secondary">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6">
-          <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
-            Got footage we should see?
-          </h2>
+          <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">Got footage we should see?</h2>
           <Button asChild variant="coral" size="lg">
             <Link to="/contact">Send It Our Way</Link>
           </Button>
