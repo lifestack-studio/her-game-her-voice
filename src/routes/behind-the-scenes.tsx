@@ -43,6 +43,9 @@ function getTikTokId(url: string): string | null {
  */
 const TIKTOK_VIDEO_URLS: string[] = [
   // "https://www.tiktok.com/@hghvpodcast/video/0000000000000000000",
+  "https://www.tiktok.com/@hghvpodcast/video/7617891931233848598?is_from_webapp=1&sender_device=pc"
+  "https://www.tiktok.com/@hghvpodcast/video/7617851906299350294?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094"
+  "https://www.tiktok.com/@hghvpodcast/video/7617820371462524182?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094"
 ];
 
 function BehindTheScenesPage() {
