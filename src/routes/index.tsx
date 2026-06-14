@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import heroAsset from "@/assets/hero.jpg.asset.json";
 import brandBanner from "@/assets/brand-banner.png";
 import { Button } from "@/components/ui/button";
 import { PresentedBy } from "@/components/presented-by";
@@ -38,7 +38,7 @@ function HomePage() {
       {/* Hero */}
       <section className="relative flex min-h-[60vh] items-center overflow-hidden md:min-h-[80vh]">
         <img
-          src={heroImg}
+          src={heroAsset.url}
           alt="Women's ice hockey players in action on the rink"
           width={1920}
           height={1080}
