@@ -1,8 +1,44 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { LazyIframe } from "@/components/lazy-iframe";
+
+/**
+ * Fallback clips shown before the TikTok account is connected, or if the
+ * TikTok API is temporarily unavailable. Newest first, full video URLs.
+ */
+const FALLBACK_TIKTOK_URLS: string[] = [
+  "https://www.tiktok.com/@hghvpodcast/video/7617891931233848598",
+  "https://www.tiktok.com/@hghvpodcast/video/7617851906299350294",
+  "https://www.tiktok.com/@hghvpodcast/video/7617820371462524182",
+  "https://www.tiktok.com/@hghvpodcast/video/7617471982342343958",
+];
+
+/**
+ * Extract the numeric TikTok video ID from a standard video URL, e.g.
+ *   https://www.tiktok.com/@hghvpodcast/video/7311234567890123456
+ * Returns null for links we can't parse (e.g. short vm.tiktok.com URLs).
+ */
+function getTikTokId(url: string): string | null {
+  const match = url.match(/\/video\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+interface LatestTikTokVideo {
+  id: string;
+  url: string;
+}
+
+const videosQueryOptions = queryOptions<LatestTikTokVideo[]>({
+  queryKey: ["tiktok", "latest"],
+  queryFn: async () => {
+    const res = await fetch("/api/tiktok/latest");
+    if (!res.ok) throw new Error("Failed to load TikTok videos");
+    return (await res.json()) as LatestTikTokVideo[];
+  },
+});
 
 export const Route = createFileRoute("/behind-the-scenes")({
   head: () => ({
@@ -22,38 +58,14 @@ export const Route = createFileRoute("/behind-the-scenes")({
     ],
     links: [{ rel: "canonical", href: "/behind-the-scenes" }],
   }),
+  loader: ({ context }) => {
+    context.queryClient.ensureQueryData(videosQueryOptions);
+  },
   component: BehindTheScenesPage,
+  errorComponent: () => <BehindTheScenesPage />,
 });
 
-/**
- * Extract the numeric TikTok video ID from a standard video URL, e.g.
- *   https://www.tiktok.com/@hghvpodcast/video/7311234567890123456
- * Returns null for links we can't parse (e.g. short vm.tiktok.com URLs).
- */
-function getTikTokId(url: string): string | null {
-  const match = url.match(/\/video\/(\d+)/);
-  return match ? match[1] : null;
-}
-
-/**
- * ADMIN: Paste TikTok video URLs here, NEWEST FIRST.
- * Only the first three are shown on the page.
- * Use full URLs like:
- *   https://www.tiktok.com/@hghvpodcast/video/7311234567890123456
- */
-const TIKTOK_VIDEO_URLS: string[] = [
-  // "https://www.tiktok.com/@hghvpodcast/video/0000000000000000000",
-  "https://www.tiktok.com/@hghvpodcast/video/7617891931233848598?is_from_webapp=1&sender_device=pc",
-  "https://www.tiktok.com/@hghvpodcast/video/7617851906299350294?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094",
-  "https://www.tiktok.com/@hghvpodcast/video/7617820371462524182?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094",
-  "https://www.tiktok.com/@hghvpodcast/video/7617471982342343958?is_from_webapp=1&sender_device=pc&web_id=7647560689758275094",
-];
-
 function BehindTheScenesPage() {
-  const videos = TIKTOK_VIDEO_URLS.slice(0, 3)
-    .map((url) => ({ url, id: getTikTokId(url) }))
-    .filter((v): v is { url: string; id: string } => v.id !== null);
-
   return (
     <>
       <PageHero title="Behind the Scenes" subtitle="The moments between the moments">
@@ -65,27 +77,7 @@ function BehindTheScenesPage() {
 
       <section className="bg-background py-20 sm:py-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          {videos.length > 0 ? (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {videos.map((video) => (
-                <article key={video.id} className="overflow-hidden rounded-2xl bg-card shadow-card">
-                  <LazyIframe
-                    src={`https://www.tiktok.com/embed/v2/${video.id}`}
-                    title="TikTok video"
-                    height="100%"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    className="aspect-[9/16] w-full"
-                  />
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 rounded-2xl bg-navy-gradient px-8 py-16 text-center text-white/70">
-              <Film className="size-9" aria-hidden="true" />
-              <span className="font-display text-sm font-semibold uppercase tracking-wide">Clips Coming Soon</span>
-              <p className="text-sm text-white/60">Fresh behind-the-scenes moments are on the way.</p>
-            </div>
-          )}
+          <VideoGrid />
 
           <p className="mt-10 text-center text-sm text-muted-foreground">
             Follow{" "}
@@ -111,5 +103,45 @@ function BehindTheScenesPage() {
         </div>
       </section>
     </>
+  );
+}
+
+function VideoGrid() {
+  const { data } = useSuspenseQuery(videosQueryOptions);
+
+  // Use live TikTok videos when available, otherwise the fallback list.
+  const source: { url: string; id: string | null }[] =
+    data.length > 0
+      ? data.map((v) => ({ url: v.url, id: v.id || getTikTokId(v.url) }))
+      : FALLBACK_TIKTOK_URLS.map((url) => ({ url, id: getTikTokId(url) }));
+
+  const videos = source.filter(
+    (v): v is { url: string; id: string } => v.id !== null,
+  );
+
+  if (videos.length === 0) {
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 rounded-2xl bg-navy-gradient px-8 py-16 text-center text-white/70">
+        <Film className="size-9" aria-hidden="true" />
+        <span className="font-display text-sm font-semibold uppercase tracking-wide">Clips Coming Soon</span>
+        <p className="text-sm text-white/60">Fresh behind-the-scenes moments are on the way.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {videos.map((video) => (
+        <article key={video.id} className="overflow-hidden rounded-2xl bg-card shadow-card">
+          <LazyIframe
+            src={`https://www.tiktok.com/embed/v2/${video.id}`}
+            title="TikTok video"
+            height="100%"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            className="aspect-[9/16] w-full"
+          />
+        </article>
+      ))}
+    </div>
   );
 }
