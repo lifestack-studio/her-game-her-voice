@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { Instagram, Linkedin, Facebook, Youtube, Music2 } from "lucide-react";
+import { Instagram, Linkedin, Music2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export const SPOTIFY_SHOW_URL =
@@ -18,14 +18,6 @@ export const NAV_LINKS = [
   { label: "Contact", to: "/contact" },
 ] as const;
 
-// X (Twitter) has no current lucide icon; use a custom glyph component.
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644z" />
-    </svg>
-  );
-}
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -41,10 +33,7 @@ export const SOCIAL_LINKS: {
   Icon: LucideIcon | (({ className }: { className?: string }) => ReactElement);
 }[] = [
   { label: "Instagram", href: "https://www.instagram.com/hghvpodcast", Icon: Instagram },
-  { label: "X (Twitter)", href: "https://x.com", Icon: XIcon },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/her-game-her-voice", Icon: Linkedin },
-  { label: "Facebook", href: "https://www.facebook.com", Icon: Facebook },
-  { label: "YouTube", href: "https://www.youtube.com", Icon: Youtube },
   { label: "TikTok", href: "https://www.tiktok.com/@hghvpodcast", Icon: TikTokIcon },
 ];
 
