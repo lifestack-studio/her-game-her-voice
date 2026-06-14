@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BehindTheScenesRouteImport } from './routes/behind-the-scenes'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiTiktokLatestRouteImport } from './routes/api/tiktok/latest'
 import { Route as ApiPodcastLatestRouteImport } from './routes/api/podcast/latest'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -53,6 +54,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTiktokLatestRoute = ApiTiktokLatestRouteImport.update({
+  id: '/api/tiktok/latest',
+  path: '/api/tiktok/latest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPodcastLatestRoute = ApiPodcastLatestRouteImport.update({
   id: '/api/podcast/latest',
   path: '/api/podcast/latest',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
+  '/api/tiktok/latest': typeof ApiTiktokLatestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
+  '/api/tiktok/latest': typeof ApiTiktokLatestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
+  '/api/tiktok/latest': typeof ApiTiktokLatestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/api/podcast/latest'
+    | '/api/tiktok/latest'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/api/podcast/latest'
+    | '/api/tiktok/latest'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/api/podcast/latest'
+    | '/api/tiktok/latest'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPodcastLatestRoute: typeof ApiPodcastLatestRoute
+  ApiTiktokLatestRoute: typeof ApiTiktokLatestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tiktok/latest': {
+      id: '/api/tiktok/latest'
+      path: '/api/tiktok/latest'
+      fullPath: '/api/tiktok/latest'
+      preLoaderRoute: typeof ApiTiktokLatestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/podcast/latest': {
       id: '/api/podcast/latest'
       path: '/api/podcast/latest'
@@ -204,17 +224,8 @@ const rootRouteChildren: RootRouteChildren = {
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPodcastLatestRoute: ApiPodcastLatestRoute,
+  ApiTiktokLatestRoute: ApiTiktokLatestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
