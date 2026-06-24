@@ -112,14 +112,14 @@ export function SiteFooter() {
           <h2 className="text-center font-display text-sm font-semibold uppercase tracking-wide text-white/60">
             Our Sponsors
           </h2>
-          <ul className="mt-6 grid grid-cols-2 place-items-center gap-x-8 gap-y-6 sm:grid-cols-3">
+          <ul className="mt-6 grid grid-cols-2 place-items-center gap-x-12 gap-y-8 sm:grid-cols-3">
             {SPONSORS.map((sponsor) => {
               const img = (
                 <img
                   src={sponsor.src}
                   alt={sponsor.name}
                   loading="lazy"
-                  className="h-12 w-auto max-w-full object-contain sm:h-16"
+                  className="h-20 w-auto max-w-full object-contain sm:h-24"
                 />
               );
               return (
