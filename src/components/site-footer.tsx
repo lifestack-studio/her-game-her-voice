@@ -6,6 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/logo";
 import { NAV_LINKS, SOCIAL_LINKS, CONTACT_EMAIL } from "@/lib/site";
+import ehHockey from "@/assets/eh-hockey-repair-shop.png.asset.json";
+import lmCatering from "@/assets/lm-catering.png.asset.json";
+import lifestackWhite from "@/assets/lifestack-white.png.asset.json";
+
+const SPONSORS = [
+  { name: "lifestack", src: lifestackWhite.url, href: "https://lifestack.studio" },
+  { name: "Eh! Hockey Repair Shop", src: ehHockey.url, href: null },
+  { name: "L&M Catering", src: lmCatering.url, href: null },
+];
 
 export function SiteFooter() {
   const [email, setEmail] = useState("");
@@ -99,7 +108,42 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-center text-sm text-white/50 sm:flex-row sm:text-left">
+        <div className="mt-12 border-t border-white/10 pt-10">
+          <h2 className="text-center font-display text-sm font-semibold uppercase tracking-wide text-white/60">
+            Our Sponsors
+          </h2>
+          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
+            {SPONSORS.map((sponsor) => {
+              const img = (
+                <img
+                  src={sponsor.src}
+                  alt={sponsor.name}
+                  loading="lazy"
+                  className="h-16 w-auto object-contain"
+                />
+              );
+              return (
+                <li key={sponsor.name}>
+                  {sponsor.href ? (
+                    <a
+                      href={sponsor.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${sponsor.name} — opens in a new tab`}
+                      className="inline-flex transition-opacity hover:opacity-80"
+                    >
+                      {img}
+                    </a>
+                  ) : (
+                    img
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-6 text-center text-sm text-white/50 sm:flex-row sm:text-left">
           <p>© 2025 Her Game, Her Voice. All rights reserved.</p>
           <p>Web Design &amp; Development by Declan Bianchi</p>
         </div>
