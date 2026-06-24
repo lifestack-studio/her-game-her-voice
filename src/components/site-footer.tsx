@@ -114,12 +114,13 @@ export function SiteFooter() {
           </h2>
           <ul className="mt-6 grid grid-cols-2 place-items-center gap-x-12 gap-y-8 sm:grid-cols-3">
             {SPONSORS.map((sponsor) => {
+              const isLarge = sponsor.name === "L&M Catering";
               const img = (
                 <img
                   src={sponsor.src}
                   alt={sponsor.name}
                   loading="lazy"
-                  className="h-20 w-auto max-w-full object-contain sm:h-24"
+                  className={`${isLarge ? "h-40 sm:h-48" : "h-20 sm:h-24"} w-auto max-w-full object-contain`}
                 />
               );
               return (
