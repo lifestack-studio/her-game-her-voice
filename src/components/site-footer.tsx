@@ -112,30 +112,32 @@ export function SiteFooter() {
           <h2 className="text-center font-display text-sm font-semibold uppercase tracking-wide text-white/60">
             Our Sponsors
           </h2>
-          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
+          <ul className="mt-6 grid grid-cols-2 place-items-center gap-4 sm:grid-cols-3 sm:gap-6">
             {SPONSORS.map((sponsor) => {
-              const img = (
-                <img
-                  src={sponsor.src}
-                  alt={sponsor.name}
-                  loading="lazy"
-                  className="h-16 w-auto object-contain"
-                />
+              const logo = (
+                <div className="relative aspect-[3/2] w-full max-w-[12rem] overflow-hidden rounded-lg bg-white/5 p-3 sm:p-4">
+                  <img
+                    src={sponsor.src}
+                    alt={sponsor.name}
+                    loading="lazy"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
               );
               return (
-                <li key={sponsor.name}>
+                <li key={sponsor.name} className="flex w-full justify-center">
                   {sponsor.href ? (
                     <a
                       href={sponsor.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${sponsor.name} — opens in a new tab`}
-                      className="inline-flex transition-opacity hover:opacity-80"
+                      className="inline-block transition-opacity hover:opacity-80"
                     >
-                      {img}
+                      {logo}
                     </a>
                   ) : (
-                    img
+                    logo
                   )}
                 </li>
               );
