@@ -101,7 +101,7 @@ function AboutPage() {
               </p>
               <p>
                 The podcast started as an opportunity to give women a voice in the sport. Our founder Emma Stigter got
-                sick of being told “Girls can’t play hockey” and wanted to prove otherwise
+                sick of being told “Girls can’t play hockey” and wanted to prove otherwise.
               </p>
               <p>
                 After studying Radio and Audio at the University of Bedfordshire, Emma saw a gap in the podcast market
