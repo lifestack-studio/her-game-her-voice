@@ -12,8 +12,8 @@ import lifestackWhite from "@/assets/lifestack-white.png.asset.json";
 
 const SPONSORS = [
   { name: "lifestack", src: lifestackWhite.url, href: "https://lifestack.studio" },
-  { name: "Eh! Hockey Repair Shop", src: ehHockey.url, href: null },
-  { name: "L&M Catering", src: lmCatering.url, href: null },
+  { name: "Eh! Hockey Repair Shop", src: ehHockey.url, href: "https://www.ehhockey.co.uk/" },
+  { name: "L&M Catering", src: lmCatering.url, href: "https://landmcatering.wixsite.com/landmcatering" },
 ];
 
 export function SiteFooter() {
