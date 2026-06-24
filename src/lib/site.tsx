@@ -35,6 +35,9 @@ export const SOCIAL_LINKS: {
   { label: "Instagram", href: "https://www.instagram.com/hghvpodcast", Icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/her-game-her-voice", Icon: Linkedin },
   { label: "TikTok", href: "https://www.tiktok.com/@hghvpodcast", Icon: TikTokIcon },
+  { label: "Spotify", href: SPOTIFY_SHOW_URL, Icon: SpotifyIcon}
+  { label: "Apple Podcasts", href: "https://podcasts.apple.com/us/podcast/her-game-her-voice/id1825002407", Icon: AppleIcon,
+  }
 ];
 
 export const SPOTIFY_ICON = Music2;
