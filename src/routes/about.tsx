@@ -56,7 +56,7 @@ const galleryPhotos = [
     tall: true,
   },
   { src: recordingJersey, alt: "Emma in a Stars jersey wearing headphones during a recording" },
-  
+
   { src: pinkStudio, alt: "Emma celebrating outside the pink Her Game, Her Voice podcast studio" },
   {
     src: studioMic,
@@ -90,34 +90,26 @@ function AboutPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
-              Emma Stigter
-            </h2>
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">Emma Stigter</h2>
             <p className="mt-1 font-display text-lg font-semibold text-accent">Founder &amp; Host</p>
             <div className="mt-6 space-y-4 text-lg leading-relaxed text-foreground">
+              <p>Her Game, Her Voice is a podcast about women changing the face of ice hockey, one story at a time.</p>
               <p>
-                Her Game, Her Voice is a podcast about women changing the face of ice hockey,
-                one story at a time.
+                Hosted by Emma Stigter, each episode features in-person conversations with team captains and key players
+                from across the UK. We talk about what it really means to lead, to belong, and to build something bigger
+                than just a team.
               </p>
               <p>
-                Hosted by Emma Stigter, each episode features in-person conversations with team
-                captains and key players from across the UK. We talk about what it really means
-                to lead, to belong, and to build something bigger than just a team.
+                The podcast started as an opportunity to give women a voice in the sport. Our founder Emma Stigter got
+                sick of being told “Girls can’t play hockey” and wanted to prove otherwise
               </p>
               <p>
-                The podcast started as an opportunity to give women a voice in the sport. Our
-                founder Emma Stigter got sick of being told “Girls can’t play hockey” and
-                wanted to prove otherwise.
+                After studying Radio and Audio at the University of Bedfordshire, Emma saw a gap in the podcast market
+                for content focused on women’s ice hockey in Europe. Thus creating Her Game, Her Voice.
               </p>
               <p>
-                After studying Radio and Audio at the University of Bedfordshire, Emma saw a gap
-                in the podcast market for content focused on women’s ice hockey in Europe. Thus
-                creating Her Game, Her Voice.
-              </p>
-              <p>
-                We are more than just a podcast — we want to work within the hockey community and
-                break down barriers women face in the sport. If you have an event you want us to
-                attend, please get in touch!
+                We are more than just a podcast — we want to work within the hockey community and break down barriers
+                women face in the sport. If you have an event you want us to attend, please get in touch!
               </p>
             </div>
           </div>
@@ -126,12 +118,9 @@ function AboutPage() {
 
       {/* Behind the scenes gallery */}
       <section className="bg-background py-20 sm:py-24">
-
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center">
-            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
-              Behind the Mic
-            </h2>
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">Behind the Mic</h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
               From the rink to the studio — moments from the journey so far.
             </p>
@@ -140,14 +129,10 @@ function AboutPage() {
         </div>
       </section>
 
-
-
       {/* Mission pillars */}
       <section className="bg-secondary/20 py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-center font-display text-3xl font-bold text-primary sm:text-4xl">
-            What we stand for
-          </h2>
+          <h2 className="text-center font-display text-3xl font-bold text-primary sm:text-4xl">What we stand for</h2>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {pillars.map(({ Icon, title, text }) => (
               <article
@@ -168,9 +153,7 @@ function AboutPage() {
       {/* CTA */}
       <section className="bg-navy-gradient">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center sm:px-6">
-          <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">
-            Want to be part of the story?
-          </h2>
+          <h2 className="font-display text-3xl font-bold text-white sm:text-4xl">Want to be part of the story?</h2>
           <Button asChild variant="onDark" size="lg">
             <Link to="/contact">Get in Touch</Link>
           </Button>
