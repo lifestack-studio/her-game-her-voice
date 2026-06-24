@@ -2,8 +2,7 @@ import type { ReactElement } from "react";
 import { Instagram, Linkedin, Music2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-export const SPOTIFY_SHOW_URL =
-  "https://open.spotify.com/show/3H4XRlV2oIFAS9u9Z5vvme";
+export const SPOTIFY_SHOW_URL = "https://open.spotify.com/show/3H4XRlV2oIFAS9u9Z5vvme";
 export const SPOTIFY_EMBED_URL =
   "https://open.spotify.com/embed/show/3H4XRlV2oIFAS9u9Z5vvme?utm_source=generator&theme=0";
 export const SHOP_URL = "https://HerGameHerVoice.shop";
@@ -17,7 +16,6 @@ export const NAV_LINKS = [
   { label: "Behind the Scenes", to: "/behind-the-scenes" },
   { label: "Contact", to: "/contact" },
 ] as const;
-
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -35,9 +33,6 @@ export const SOCIAL_LINKS: {
   { label: "Instagram", href: "https://www.instagram.com/hghvpodcast", Icon: Instagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/her-game-her-voice", Icon: Linkedin },
   { label: "TikTok", href: "https://www.tiktok.com/@hghvpodcast", Icon: TikTokIcon },
-  { label: "Spotify", href: SPOTIFY_SHOW_URL, Icon: SpotifyIcon}
-  { label: "Apple Podcasts", href: "https://podcasts.apple.com/us/podcast/her-game-her-voice/id1825002407", Icon: AppleIcon,
-  }
 ];
 
 export const SPOTIFY_ICON = Music2;
