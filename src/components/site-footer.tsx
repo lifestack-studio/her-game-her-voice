@@ -6,6 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/logo";
 import { NAV_LINKS, SOCIAL_LINKS, CONTACT_EMAIL } from "@/lib/site";
+import ehHockey from "@/assets/eh-hockey-repair-shop.png.asset.json";
+import lmCatering from "@/assets/lm-catering.png.asset.json";
+import lifestackWhite from "@/assets/lifestack-white.png.asset.json";
+
+const SPONSORS = [
+  { name: "lifestack", src: lifestackWhite.url, href: "https://lifestack.studio" },
+  { name: "Eh! Hockey Repair Shop", src: ehHockey.url, href: null },
+  { name: "L&M Catering", src: lmCatering.url, href: null },
+];
 
 export function SiteFooter() {
   const [email, setEmail] = useState("");
