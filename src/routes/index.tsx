@@ -133,7 +133,7 @@ function HomePage() {
       </section>
 
       {/* YouTube banner */}
-      <section className="bg-teal-gradient">
+      <section className="bg-brand-gradient">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-4 py-14 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
           <div className="flex items-center gap-4">
             <Youtube className="size-10 text-white" aria-hidden="true" />
