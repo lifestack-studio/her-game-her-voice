@@ -1,9 +1,12 @@
-# TikTok Integration (self-hosted)
+# TikTok Integration
 
 The **Behind the Scenes** page pulls @hghvpodcast's latest TikTok videos from
-`GET /api/tiktok/latest`. On a self-hosted deployment (Docker, VPS, anywhere
-outside Lovable) it talks to TikTok's **Display API** directly using your own
-developer app. This guide gets you from zero to a working feed.
+`GET /api/tiktok/latest`. The route can source videos in three ways:
+
+1. **Direct TikTok Display API** — self-hosted, no Lovable dependency (most setup).
+2. **Lovable connector gateway** — reuse the Lovable-managed TikTok connection on
+   any server, including a self-hosted Docker box, by copying two secrets.
+3. **Hardcoded fallback clips** — shown when nothing is configured.
 
 If any step isn't completed, the page gracefully falls back to a hardcoded set
 of clips — nothing breaks.
