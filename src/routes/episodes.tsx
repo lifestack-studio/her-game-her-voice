@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Music2, Apple, RefreshCw, Play } from "lucide-react";
+import { Music2, Apple, RefreshCw } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { EpisodeCard } from "@/components/episode-card";
 import { Button } from "@/components/ui/button";
