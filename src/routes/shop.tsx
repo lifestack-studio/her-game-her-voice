@@ -1,10 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import jerseyHome from "@/assets/jersey-home.jpg";
-import jerseyAway from "@/assets/jersey-away.jpg";
-import jerseySpecial from "@/assets/jersey-special.jpg";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { SHOP_URL } from "@/lib/site";
+import { JERSEYS } from "@/lib/jerseys";
 
 export const Route = createFileRoute("/shop")({
   head: () => ({
@@ -27,11 +25,8 @@ export const Route = createFileRoute("/shop")({
   component: ShopPage,
 });
 
-const jerseys = [
-  { name: "Home Jersey — Navy", image: jerseyHome },
-  { name: "Away Jersey — White", image: jerseyAway },
-  { name: "Limited Edition — Coral", image: jerseySpecial },
-];
+const jerseys = JERSEYS;
+
 
 function ShopPage() {
   return (
