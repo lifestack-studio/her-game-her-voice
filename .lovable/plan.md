@@ -1,44 +1,31 @@
-## Goal
-Make the Behind the Scenes TikTok feed fetch @hghvpodcast's latest videos automatically on a **self-hosted Docker deployment**, where Lovable's connector gateway (`connector-gateway.lovable.dev`, `LOVABLE_API_KEY`, `TIKTOK_API_KEY`) does not exist. We'll add a direct **TikTok Display API** path with a built-in one-time OAuth authorization flow (like the Lovable connect step), keep the Lovable gateway path as a fallback (hybrid), and store tokens via env vars with in-memory access-token refresh.
+## Answer first
+Connecting TikTok via the Lovable integration does **not** auto-provision your self-hosted server. Lovable has no way to write secrets into a remote Docker host. What it *can* do: the Lovable connector is backed by a **public HTTPS gateway** (`connector-gateway.lovable.dev`) that holds and auto-refreshes the TikTok OAuth tokens for you. Your self-hosted app can call that gateway from anywhere as long as it has two secrets — so "connect once on Lovable, reuse on self-host" works with a single manual copy step, not full automation.
 
-## What's unavoidable
-TikTok's Display API requires a registered **TikTok for Developers app** (Client Key + Client Secret) with the `user.info.basic` + `video.list` scopes and a registered redirect URI. There is no public "latest videos" endpoint without this. The built-in flow removes the manual curl/token juggling — you log into the TikTok account once and the site captures the refresh token — but the app credentials still have to be created once in the TikTok developer portal (guidance included in the deliverable).
+The hybrid `/api/tiktok/latest` route already built last turn supports this: if `LOVABLE_API_KEY` + `TIKTOK_API_KEY` are present (and the direct-API vars are not), it uses the gateway path automatically.
 
-## Approach
+## Two paths compared
+- **Path A — Reuse the Lovable connection (this plan):** Connect TikTok on Lovable, then copy `LOVABLE_API_KEY` and `TIKTOK_API_KEY` into your Docker env. No TikTok app, no OAuth flow. Lovable refreshes tokens. Trade-off: your self-hosted site keeps a **runtime dependency on Lovable's gateway**, and breaks if `LOVABLE_API_KEY` is rotated (you'd re-copy it).
+- **Path B — Direct TikTok Display API (already built, fully independent):** Your own TikTok app + the built-in OAuth flow + `TIKTOK_REFRESH_TOKEN`. No Lovable dependency. More setup. (Documented in `TIKTOK_SETUP.md`.)
 
-### 1. Built-in OAuth authorization flow (one-time, like Lovable's connect)
-Add two server routes so you authorize by clicking, not by hand:
+This plan implements **Path A** and documents both so you can pick per environment. They coexist — the route already prioritizes direct config over the gateway.
 
-- `GET /api/tiktok/auth/start` — redirects to TikTok's `authorize` URL with the configured Client Key, scopes (`user.info.basic,video.list`), redirect URI, and a signed CSRF `state`.
-- `GET /api/tiktok/auth/callback` — exchanges the returned `code` for `access_token` + `refresh_token`, then renders a minimal page showing the **refresh token** to copy.
+## Steps
+1. **Link the TikTok connector on Lovable.** Run the connect flow so `TIKTOK_API_KEY` is injected into project secrets (`LOVABLE_API_KEY` already exists). This requires authorizing the @hghvpodcast account in the Lovable prompt.
+2. **Verify the gateway returns videos.** Call `video/list` through the gateway from the build sandbox to confirm the connection is live and the account is authorized, so we know the path works before relying on it.
+3. **Document "reuse from self-host" (Path A).** Update `TIKTOK_SETUP.md` (and `.env.example`) with a clear section:
+   - Copy `LOVABLE_API_KEY` and `TIKTOK_API_KEY` values from Lovable project secrets into the Docker `.env`.
+   - Leave `TIKTOK_CLIENT_KEY` / `TIKTOK_CLIENT_SECRET` / `TIKTOK_REFRESH_TOKEN` unset (their presence would override and switch to direct API).
+   - Note the rotation caveat: if `LOVABLE_API_KEY` is rotated on Lovable, update the Docker env and restart.
+4. **No code changes to the route.** The existing hybrid selection (direct → gateway → empty) already handles Path A correctly. I'll just re-confirm the precedence comment is accurate.
 
-Both routes are gated by an admin secret (`TIKTOK_ADMIN_TOKEN`, passed as a `?key=` query param) so a published/self-hosted site doesn't expose the connect flow publicly. After authorizing, you paste the shown refresh token into your Docker env as `TIKTOK_REFRESH_TOKEN` and restart the container.
-
-### 2. Runtime feed route — hybrid (rewrite `src/routes/api/tiktok/latest.ts`)
-Selection order inside the `GET` handler (all reads inside the handler, per Worker rules):
-1. **Self-host path** — if `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, and `TIKTOK_REFRESH_TOKEN` are set: exchange the refresh token for a fresh access token, cache it in a module-scope variable until ~1 min before expiry (in-memory refresh, no storage), then `POST video/list` directly to `https://open.tiktokapis.com/v2/video/list/`.
-2. **Lovable path** — else if `LOVABLE_API_KEY` + `TIKTOK_API_KEY` are set: existing gateway call (unchanged).
-3. **Fallback** — else return `[]` (page shows the hardcoded clips).
-
-Response shape (`LatestTikTokVideo[] = { id, url }`) stays identical, so `behind-the-scenes.tsx` and its fallback list need **no changes**.
-
-### 3. Config + secrets
-- New secrets (you supply after creating the TikTok app): `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, `TIKTOK_REFRESH_TOKEN`, plus a generated `TIKTOK_ADMIN_TOKEN`. On Lovable these go in project secrets; for Docker they go in your env/compose file.
-- Add all four to `.env.example` with comments.
-- Compute the redirect URI from the request origin at runtime so it works on both the Lovable preview domain and your self-hosted domain (the exact value must also be registered in the TikTok app).
-
-### 4. Docs
-Add a short `TIKTOK_SETUP.md`: create the TikTok developer app, add the redirect URI, request `video.list` scope, set the four env vars, hit `/api/tiktok/auth/start?key=...` once, copy the refresh token, set `TIKTOK_REFRESH_TOKEN`, redeploy.
+## What stays manual (cannot be automated)
+- Copying the two secret values to your Docker host (Lovable can't write to your server).
+- Re-copying `LOVABLE_API_KEY` if you ever rotate it.
 
 ## Files
-- `src/routes/api/tiktok/latest.ts` — rewrite to hybrid (self-host direct API → gateway → empty).
-- `src/routes/api/tiktok/auth/start.ts` — new: begin OAuth, redirect to TikTok.
-- `src/routes/api/tiktok/auth/callback.ts` — new: token exchange + show refresh token.
-- `src/lib/tiktok.server.ts` — new: helpers (build authorize URL, code→token exchange, refresh→access token with in-memory cache, video.list call, response mapping).
-- `.env.example` — document the new vars.
-- `TIKTOK_SETUP.md` — new: setup + authorize walkthrough.
+- `TIKTOK_SETUP.md` — add a "Path A: reuse the Lovable connection on self-host" section.
+- `.env.example` — clarify that setting only `LOVABLE_API_KEY` + `TIKTOK_API_KEY` uses the gateway path.
+- (Possibly) a short note in `DEPLOY.md`/README if a deploy guide references TikTok.
 
-## Notes / trade-offs
-- **In-memory refresh** means the access token cache resets on container restart (fine — it just refreshes again). The long-lived **refresh token** lives only in env; if TikTok ever rotates it (it can return a new one on refresh), the in-memory copy is used for the container's lifetime, but you'd update the env value on next restart. This matches the "Env vars + in-memory refresh" choice; if you later want rotations to survive restarts, we can add the writable-token-file option.
-- No changes to the page UI or the graceful fallback behavior.
-- The TikTok app must be approved/live for production video.list access; in sandbox mode only authorized test users return data.
+## Recommendation
+If you want the self-hosted site to be genuinely independent of Lovable, prefer **Path B** (already built). Choose **Path A** only if you're fine with the self-hosted site depending on Lovable's gateway at runtime in exchange for zero TikTok-app setup.
