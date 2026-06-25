@@ -122,7 +122,7 @@ function EpisodesPage() {
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="mb-8 text-center">
             <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
-              Featured Episode
+              Watch the latest episodes
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
               Watch the conversation unfold.
