@@ -43,7 +43,7 @@ function HomePage() {
           width={1920}
           height={1080}
           fetchPriority="high"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full -scale-x-100 object-cover object-center"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
         <div className="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
