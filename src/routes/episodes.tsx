@@ -118,7 +118,7 @@ function EpisodesPage() {
     <>
       <PageHero title="Episodes" subtitle="Every story deserves to be heard" />
 
-      <section className="bg-background py-16 sm:py-20">
+      <section className="bg-secondary/20 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="mb-8 text-center">
             <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
@@ -142,7 +142,7 @@ function EpisodesPage() {
         </div>
       </section>
 
-      <section className="bg-secondary/20 py-16 sm:py-20">
+      <section className="bg-background py-16 sm:py-20">
         <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
           <div className="mb-10 text-center">
             <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
@@ -155,6 +155,7 @@ function EpisodesPage() {
           <LatestEpisodes />
         </div>
       </section>
+
 
 
       <section className="bg-secondary/20 py-16 sm:py-20">
