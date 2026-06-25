@@ -1,44 +1,44 @@
-# Auto-updating TikTok feed
+## Goal
+Make the Behind the Scenes TikTok feed fetch @hghvpodcast's latest videos automatically on a **self-hosted Docker deployment**, where Lovable's connector gateway (`connector-gateway.lovable.dev`, `LOVABLE_API_KEY`, `TIKTOK_API_KEY`) does not exist. We'll add a direct **TikTok Display API** path with a built-in one-time OAuth authorization flow (like the Lovable connect step), keep the Lovable gateway path as a fallback (hybrid), and store tokens via env vars with in-memory access-token refresh.
 
-Make the **Behind the Scenes** page pull the 6 most recent videos directly from the @hghvpodcast TikTok account, so the page refreshes itself whenever a new video is posted — no more pasting links by hand.
+## What's unavoidable
+TikTok's Display API requires a registered **TikTok for Developers app** (Client Key + Client Secret) with the `user.info.basic` + `video.list` scopes and a registered redirect URI. There is no public "latest videos" endpoint without this. The built-in flow removes the manual curl/token juggling — you log into the TikTok account once and the site captures the refresh token — but the app credentials still have to be created once in the TikTok developer portal (guidance included in the deliverable).
 
-## How it will work
+## Approach
 
-```text
-TikTok (@hghvpodcast)
-        │  video list (via Lovable TikTok connector)
-        ▼
-  /api/tiktok/latest   ──► returns 6 newest videos, cached ~1 hour
-        ▼
-Behind the Scenes page ──► renders 6 TikTok embeds automatically
-```
+### 1. Built-in OAuth authorization flow (one-time, like Lovable's connect)
+Add two server routes so you authorize by clicking, not by hand:
 
-1. The @hghvpodcast TikTok account gets connected to the project (you'll authorize this when we build — until then the page safely falls back to the current hardcoded list).
-2. A small server endpoint asks TikTok for the account's latest videos, keeps the 6 newest, and caches the result for about an hour so the page loads fast.
-3. The Behind the Scenes page shows those 6 videos instead of the manual list. When a new video is posted, it appears within the hour with no edits needed.
+- `GET /api/tiktok/auth/start` — redirects to TikTok's `authorize` URL with the configured Client Key, scopes (`user.info.basic,video.list`), redirect URI, and a signed CSRF `state`.
+- `GET /api/tiktok/auth/callback` — exchanges the returned `code` for `access_token` + `refresh_token`, then renders a minimal page showing the **refresh token** to copy.
 
-## What changes for you
+Both routes are gated by an admin secret (`TIKTOK_ADMIN_TOKEN`, passed as a `?key=` query param) so a published/self-hosted site doesn't expose the connect flow publicly. After authorizing, you paste the shown refresh token into your Docker env as `TIKTOK_REFRESH_TOKEN` and restart the container.
 
-- No more editing code to add TikTok links — posting on TikTok is enough.
-- The page shows the **6** most recent videos in the existing card grid layout.
-- The feed refreshes **hourly**.
-- The "Follow @hghvpodcast" link and the rest of the page stay the same.
+### 2. Runtime feed route — hybrid (rewrite `src/routes/api/tiktok/latest.ts`)
+Selection order inside the `GET` handler (all reads inside the handler, per Worker rules):
+1. **Self-host path** — if `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, and `TIKTOK_REFRESH_TOKEN` are set: exchange the refresh token for a fresh access token, cache it in a module-scope variable until ~1 min before expiry (in-memory refresh, no storage), then `POST video/list` directly to `https://open.tiktokapis.com/v2/video/list/`.
+2. **Lovable path** — else if `LOVABLE_API_KEY` + `TIKTOK_API_KEY` are set: existing gateway call (unchanged).
+3. **Fallback** — else return `[]` (page shows the hardcoded clips).
 
-## Build steps (technical)
+Response shape (`LatestTikTokVideo[] = { id, url }`) stays identical, so `behind-the-scenes.tsx` and its fallback list need **no changes**.
 
-1. **Connect TikTok**: link the @hghvpodcast TikTok account via the Lovable TikTok connector (provides `TIKTOK_API_KEY` + gateway access). This is the one step that needs your login.
-2. **New server route** `src/routes/api/tiktok/latest.ts`:
-  - Calls the connector gateway `POST video/list/` (`https://connector-gateway.lovable.dev/tiktok/video/list/`) requesting fields `id, share_url, embed_link, cover_image_url, create_time, video_description`.
-  - Sorts by `create_time` and returns the 6 newest as plain JSON `{ id, url }` objects.
-  - Adds `Cache-Control: public, max-age=3600` (hourly refresh).
-  - Mirrors the resilient pattern in `src/routes/api/podcast/latest.ts`: if the connector isn't configured yet or TikTok errors, returns a graceful fallback so the page never breaks.
-3. **Update** `src/routes/behind-the-scenes.tsx`:
-  - Replace the hardcoded `TIKTOK_VIDEO_URLS` array and the slice-to-3 logic with a TanStack Query loader (`ensureQueryData` + `useSuspenseQuery`) that fetches `/api/tiktok/latest`.
-  - Keep the existing `getTikTokId` helper and `LazyIframe` embed cards; render up to 6 in the same grid.
-  - Keep a small hardcoded fallback list so the page still shows clips before the account is connected or if the API is down.
-  - Add `errorComponent` / `notFoundComponent` per route conventions.
-4. **Layout note**: the grid already uses `lg:grid-cols-3`, so 6 videos fill two rows cleanly — no layout redesign needed.
+### 3. Config + secrets
+- New secrets (you supply after creating the TikTok app): `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, `TIKTOK_REFRESH_TOKEN`, plus a generated `TIKTOK_ADMIN_TOKEN`. On Lovable these go in project secrets; for Docker they go in your env/compose file.
+- Add all four to `.env.example` with comments.
+- Compute the redirect URI from the request origin at runtime so it works on both the Lovable preview domain and your self-hosted domain (the exact value must also be registered in the TikTok app).
 
-## Note on TikTok access
+### 4. Docs
+Add a short `TIKTOK_SETUP.md`: create the TikTok developer app, add the redirect URI, request `video.list` scope, set the four env vars, hit `/api/tiktok/auth/start?key=...` once, copy the refresh token, set `TIKTOK_REFRESH_TOKEN`, redeploy.
 
-TikTok's API only returns videos for the **connected** account, which is exactly what we want here (@hghvpodcast's own posts). The connector handles login and token refresh automatically. Until you authorize the account, the page keeps working from the fallback list.
+## Files
+- `src/routes/api/tiktok/latest.ts` — rewrite to hybrid (self-host direct API → gateway → empty).
+- `src/routes/api/tiktok/auth/start.ts` — new: begin OAuth, redirect to TikTok.
+- `src/routes/api/tiktok/auth/callback.ts` — new: token exchange + show refresh token.
+- `src/lib/tiktok.server.ts` — new: helpers (build authorize URL, code→token exchange, refresh→access token with in-memory cache, video.list call, response mapping).
+- `.env.example` — document the new vars.
+- `TIKTOK_SETUP.md` — new: setup + authorize walkthrough.
+
+## Notes / trade-offs
+- **In-memory refresh** means the access token cache resets on container restart (fine — it just refreshes again). The long-lived **refresh token** lives only in env; if TikTok ever rotates it (it can return a new one on refresh), the in-memory copy is used for the container's lifetime, but you'd update the env value on next restart. This matches the "Env vars + in-memory refresh" choice; if you later want rotations to survive restarts, we can add the writable-token-file option.
+- No changes to the page UI or the graceful fallback behavior.
+- The TikTok app must be approved/live for production video.list access; in sandbox mode only authorized test users return data.

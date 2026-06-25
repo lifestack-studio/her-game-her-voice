@@ -18,6 +18,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiTiktokLatestRouteImport } from './routes/api/tiktok/latest'
 import { Route as ApiPodcastLatestRouteImport } from './routes/api/podcast/latest'
+import { Route as ApiTiktokAuthStartRouteImport } from './routes/api/tiktok/auth/start'
+import { Route as ApiTiktokAuthCallbackRouteImport } from './routes/api/tiktok/auth/callback'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -64,6 +66,16 @@ const ApiPodcastLatestRoute = ApiPodcastLatestRouteImport.update({
   path: '/api/podcast/latest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTiktokAuthStartRoute = ApiTiktokAuthStartRouteImport.update({
+  id: '/api/tiktok/auth/start',
+  path: '/api/tiktok/auth/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTiktokAuthCallbackRoute = ApiTiktokAuthCallbackRouteImport.update({
+  id: '/api/tiktok/auth/callback',
+  path: '/api/tiktok/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +87,8 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
   '/api/tiktok/latest': typeof ApiTiktokLatestRoute
+  '/api/tiktok/auth/callback': typeof ApiTiktokAuthCallbackRoute
+  '/api/tiktok/auth/start': typeof ApiTiktokAuthStartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +100,8 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
   '/api/tiktok/latest': typeof ApiTiktokLatestRoute
+  '/api/tiktok/auth/callback': typeof ApiTiktokAuthCallbackRoute
+  '/api/tiktok/auth/start': typeof ApiTiktokAuthStartRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +114,8 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
   '/api/tiktok/latest': typeof ApiTiktokLatestRoute
+  '/api/tiktok/auth/callback': typeof ApiTiktokAuthCallbackRoute
+  '/api/tiktok/auth/start': typeof ApiTiktokAuthStartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +129,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/podcast/latest'
     | '/api/tiktok/latest'
+    | '/api/tiktok/auth/callback'
+    | '/api/tiktok/auth/start'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +142,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/podcast/latest'
     | '/api/tiktok/latest'
+    | '/api/tiktok/auth/callback'
+    | '/api/tiktok/auth/start'
   id:
     | '__root__'
     | '/'
@@ -133,6 +155,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/podcast/latest'
     | '/api/tiktok/latest'
+    | '/api/tiktok/auth/callback'
+    | '/api/tiktok/auth/start'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +169,8 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPodcastLatestRoute: typeof ApiPodcastLatestRoute
   ApiTiktokLatestRoute: typeof ApiTiktokLatestRoute
+  ApiTiktokAuthCallbackRoute: typeof ApiTiktokAuthCallbackRoute
+  ApiTiktokAuthStartRoute: typeof ApiTiktokAuthStartRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +238,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPodcastLatestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tiktok/auth/start': {
+      id: '/api/tiktok/auth/start'
+      path: '/api/tiktok/auth/start'
+      fullPath: '/api/tiktok/auth/start'
+      preLoaderRoute: typeof ApiTiktokAuthStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tiktok/auth/callback': {
+      id: '/api/tiktok/auth/callback'
+      path: '/api/tiktok/auth/callback'
+      fullPath: '/api/tiktok/auth/callback'
+      preLoaderRoute: typeof ApiTiktokAuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,17 +265,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPodcastLatestRoute: ApiPodcastLatestRoute,
   ApiTiktokLatestRoute: ApiTiktokLatestRoute,
+  ApiTiktokAuthCallbackRoute: ApiTiktokAuthCallbackRoute,
+  ApiTiktokAuthStartRoute: ApiTiktokAuthStartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
