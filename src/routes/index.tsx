@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight, Quote, Youtube } from "lucide-react";
 import heroAsset from "@/assets/hero.jpg.asset.json";
 import brandBanner from "@/assets/brand-banner.png";
 import { Button } from "@/components/ui/button";
