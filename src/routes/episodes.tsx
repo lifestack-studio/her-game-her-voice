@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Music2, Apple, RefreshCw } from "lucide-react";
+import { Music2, Apple, RefreshCw, Play } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { EpisodeCard } from "@/components/episode-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { latestEpisodesQueryOptions, type Episode } from "@/lib/podcast";
 import { SPOTIFY_SHOW_URL } from "@/lib/site";
+
 
 export const Route = createFileRoute("/episodes")({
   head: () => ({
