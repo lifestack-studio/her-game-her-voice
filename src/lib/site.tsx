@@ -6,7 +6,7 @@ export const SPOTIFY_SHOW_URL = "https://open.spotify.com/show/3H4XRlV2oIFAS9u9Z
 export const SPOTIFY_EMBED_URL =
   "https://open.spotify.com/embed/show/3H4XRlV2oIFAS9u9Z5vvme?utm_source=generator&theme=0";
 export const SHOP_URL = "https://HerGameHerVoice.shop";
-export const CONTACT_EMAIL = "estigter@outlook.com";
+export const CONTACT_EMAIL = "hergamehervoicepodcast@gmail.com";
 
 export const NAV_LINKS = [
   { label: "Home", to: "/" },
