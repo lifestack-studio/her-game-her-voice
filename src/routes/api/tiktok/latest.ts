@@ -12,11 +12,13 @@ import {
  * Returns the most recent @hghvpodcast TikTok videos as { id, url }[].
  *
  * Hybrid source selection (first available wins):
- *   1. Direct TikTok Display API — self-hosted path. Uses your own developer
- *      app (TIKTOK_CLIENT_KEY + TIKTOK_CLIENT_SECRET + TIKTOK_REFRESH_TOKEN).
- *      Works anywhere, including Docker outside Lovable. See TIKTOK_SETUP.md.
- *   2. Lovable connector gateway — when running on Lovable with the TikTok
- *      connector linked (LOVABLE_API_KEY + TIKTOK_API_KEY).
+ *   1. Direct TikTok Display API — fully self-hosted path. Uses your own
+ *      developer app (TIKTOK_CLIENT_KEY + TIKTOK_CLIENT_SECRET +
+ *      TIKTOK_REFRESH_TOKEN). Works anywhere, including Docker outside Lovable.
+ *      See TIKTOK_SETUP.md Path B.
+ *   2. Lovable connector gateway — reuse the Lovable-managed TikTok connection
+ *      on any server (including self-hosted) by copying LOVABLE_API_KEY and
+ *      TIKTOK_API_KEY into the server env. See TIKTOK_SETUP.md Path A.
  *   3. Empty list — the page falls back to its hardcoded clips.
  */
 
