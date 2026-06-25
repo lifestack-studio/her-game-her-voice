@@ -139,6 +139,17 @@ function EpisodesPage() {
               />
             </AspectRatio>
           </div>
+          <div className="mt-6 text-center">
+            <a
+              href="https://www.youtube.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#FF0000] px-6 py-3 font-semibold text-white shadow-card transition hover:brightness-110"
+            >
+              <Youtube className="size-5" aria-hidden="true" />
+              Subscribe on YouTube
+            </a>
+          </div>
         </div>
       </section>
 
