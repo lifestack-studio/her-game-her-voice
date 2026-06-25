@@ -6,8 +6,10 @@ import { PageHero } from "@/components/page-hero";
 import { EpisodeCard } from "@/components/episode-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { latestEpisodesQueryOptions, type Episode } from "@/lib/podcast";
 import { SPOTIFY_SHOW_URL } from "@/lib/site";
+
 
 export const Route = createFileRoute("/episodes")({
   head: () => ({
@@ -116,6 +118,30 @@ function EpisodesPage() {
     <>
       <PageHero title="Episodes" subtitle="Every story deserves to be heard" />
 
+      <section className="bg-secondary/20 py-16 sm:py-20">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <div className="mb-8 text-center">
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
+              Featured Episode
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              Watch the conversation unfold.
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border shadow-card">
+            <AspectRatio ratio={16 / 9}>
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/xG4MmUr3b2M"
+                title="Featured episode on YouTube"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="h-full w-full border-0"
+              />
+            </AspectRatio>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-background py-16 sm:py-20">
         <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
           <div className="mb-10 text-center">
@@ -129,6 +155,8 @@ function EpisodesPage() {
           <LatestEpisodes />
         </div>
       </section>
+
+
 
       <section className="bg-secondary/20 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
