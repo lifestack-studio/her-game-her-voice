@@ -9,12 +9,12 @@ import { LazyIframe } from "@/components/lazy-iframe";
  * Fallback clips shown before the TikTok account is connected, or if the
  * TikTok API is temporarily unavailable. Newest first, full video URLs.
  */
-const FALLBACK_TIKTOK_URLS: string[] = [
+const CLEAN_TIKTOK_EMBEDS: string[] = [
   "https://www.tiktok.com/@hghvpodcast/video/7617891931233848598",
   "https://www.tiktok.com/@hghvpodcast/video/7617851906299350294",
   "https://www.tiktok.com/@hghvpodcast/video/7617820371462524182",
   "https://www.tiktok.com/@hghvpodcast/video/7617471982342343958",
-];
+].map((url) => `https://www.tiktok.com/player/v1/${url.split("/video/")[1]}?description=0&music_info=0`);
 
 /**
  * Extract the numeric TikTok video ID from a standard video URL, e.g.
@@ -115,9 +115,7 @@ function VideoGrid() {
       ? data.map((v) => ({ url: v.url, id: v.id || getTikTokId(v.url) }))
       : FALLBACK_TIKTOK_URLS.map((url) => ({ url, id: getTikTokId(url) }));
 
-  const videos = source.filter(
-    (v): v is { url: string; id: string } => v.id !== null,
-  );
+  const videos = source.filter((v): v is { url: string; id: string } => v.id !== null);
 
   if (videos.length === 0) {
     return (
