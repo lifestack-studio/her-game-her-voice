@@ -55,29 +55,32 @@ function ShopPage() {
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {jerseys.map((jersey) => (
               <article
-                key={jersey.name}
+                key={jersey.slug}
                 className="group overflow-hidden rounded-2xl bg-card shadow-card transition-all hover:-translate-y-1.5 hover:shadow-lift"
               >
-                <div className="aspect-square overflow-hidden bg-muted">
-                  <img
-                    src={jersey.image}
-                    alt={`${jersey.name} — Her Game, Her Voice`}
-                    width={1024}
-                    height={1024}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
+                <Link to="/shop/$slug" params={{ slug: jersey.slug }} className="block">
+                  <div className="aspect-square overflow-hidden bg-muted">
+                    <img
+                      src={jersey.image}
+                      alt={`${jersey.name} — Her Game, Her Voice`}
+                      width={1024}
+                      height={1024}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                </Link>
                 <div className="flex items-center justify-between gap-3 p-5">
                   <h3 className="font-display text-lg font-bold text-primary">{jersey.name}</h3>
                   <Button asChild variant="coral" size="sm">
-                    <a href={SHOP_URL} target="_blank" rel="noopener noreferrer">
-                      Shop Now
-                    </a>
+                    <Link to="/shop/$slug" params={{ slug: jersey.slug }}>
+                      Buy Now
+                    </Link>
                   </Button>
                 </div>
               </article>
             ))}
+
           </div>
         </div>
       </section>
