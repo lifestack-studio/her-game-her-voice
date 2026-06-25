@@ -338,7 +338,7 @@ function ProductPage() {
                 type="checkbox"
                 checked={wantReceipt}
                 onChange={(e) => setWantReceipt(e.target.checked)}
-                className="size-4 accent-[var(--color-accent,#FF4500)]"
+                className="size-4 accent-[var(--accent)]"
               />
               Email me a copy of the receipt
             </label>
