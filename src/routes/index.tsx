@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight, Quote, Youtube } from "lucide-react";
 import heroAsset from "@/assets/hero.jpg.asset.json";
 import brandBanner from "@/assets/brand-banner.png";
 import { Button } from "@/components/ui/button";
@@ -132,9 +132,25 @@ function HomePage() {
         </div>
       </section>
 
-
-
-
+      {/* YouTube banner */}
+      <section className="bg-brand-gradient">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-4 py-14 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
+          <div className="flex items-center gap-4">
+            <Youtube className="size-10 text-white" aria-hidden="true" />
+            <div>
+              <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
+                We are on YouTube Now
+              </h2>
+              <p className="mt-1 text-white/80">
+                Watch the latest episodes and clips from the show.
+              </p>
+            </div>
+          </div>
+          <Button asChild variant="onDark" size="lg">
+            <Link to="/episodes">Watch now</Link>
+          </Button>
+        </div>
+      </section>
 
       {/* Guest nomination banner */}
       <section className="bg-secondary">
