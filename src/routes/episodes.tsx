@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Music2, Apple, RefreshCw } from "lucide-react";
+import { Music2, Apple, RefreshCw, Youtube } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { EpisodeCard } from "@/components/episode-card";
 import { Button } from "@/components/ui/button";
@@ -138,6 +138,17 @@ function EpisodesPage() {
                 className="h-full w-full border-0"
               />
             </AspectRatio>
+          </div>
+          <div className="mt-6 text-center">
+            <a
+              href="https://www.youtube.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#FF0000] px-6 py-3 font-semibold text-white shadow-card transition hover:brightness-110"
+            >
+              <Youtube className="size-5" aria-hidden="true" />
+              Subscribe on YouTube
+            </a>
           </div>
         </div>
       </section>
