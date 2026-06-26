@@ -44,7 +44,8 @@ export const Route = createFileRoute("/api/public/stripe/webhook")({
           if (formspreeEndpoint) {
             const jersey = getJersey(metadata.slug);
             const quantity = Number(metadata.quantity);
-            const total = Number.isFinite(quantity) && quantity >= 1 ? JERSEY_PRICE * quantity : JERSEY_PRICE;
+            const total =
+              Number.isFinite(quantity) && quantity >= 1 ? JERSEY_PRICE * quantity : JERSEY_PRICE;
             const subject = `New jersey order — ${jersey?.name ?? "Custom Jersey"}`;
 
             try {

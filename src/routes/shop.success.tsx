@@ -100,7 +100,9 @@ function SuccessPage() {
               </div>
 
               <div className="rounded-2xl bg-secondary/30 p-6 text-left text-sm">
-                <h2 className="mb-4 font-display text-lg font-semibold text-primary">Order summary</h2>
+                <h2 className="mb-4 font-display text-lg font-semibold text-primary">
+                  Order summary
+                </h2>
                 <dl className="grid gap-2">
                   <OrderRow label="Product" value={productName(state.metadata)} />
                   <OrderRow label="Size" value={state.metadata.size} />

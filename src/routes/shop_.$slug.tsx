@@ -277,15 +277,17 @@ function ProductPage() {
                   disabled={isRedirecting}
                 >
                   <CreditCard className="size-5" />
-                  {isRedirecting ? "Redirecting to Stripe…" : `Pay with Stripe — ${formatGBP(total)}`}
+                  {isRedirecting
+                    ? "Redirecting to Stripe…"
+                    : `Pay with Stripe — ${formatGBP(total)}`}
                 </Button>
               </div>
 
               {/* Description */}
               <div className="mt-8 space-y-3 rounded-2xl bg-secondary/30 p-5 text-sm text-muted-foreground">
                 <p>
-                  <span className="font-semibold text-primary">Note:</span> Custom jerseys are unable
-                  to be returned or exchanged as they are made to order.
+                  <span className="font-semibold text-primary">Note:</span> Custom jerseys are
+                  unable to be returned or exchanged as they are made to order.
                 </p>
                 <p>
                   For a sizing guide, please visit:{" "}

@@ -25,7 +25,6 @@ const verifySchema = z.object({
 
 const stripeApiVersion = "2026-06-24.dahlia";
 
-
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .inputValidator((input) => orderSchema.parse(input))
   .handler(async ({ data }) => {
