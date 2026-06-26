@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Minus, Plus, ShoppingBag } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { ArrowLeft, CreditCard, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -12,16 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { PageHero } from "@/components/page-hero";
-import { CONTACT_EMAIL } from "@/lib/site";
 import {
   JERSEY_PRICE,
   JERSEY_SIZES,
@@ -29,6 +22,7 @@ import {
   getJersey,
   type JerseySize,
 } from "@/lib/jerseys";
+import { createCheckoutSession } from "@/lib/checkout.functions";
 
 export const Route = createFileRoute("/shop_/$slug")({
   loader: ({ params }) => {
@@ -74,24 +68,20 @@ export const Route = createFileRoute("/shop_/$slug")({
   component: ProductPage,
 });
 
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
-
 const formatGBP = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 
 function ProductPage() {
   const { jersey } = Route.useLoaderData();
+  const startCheckout = useServerFn(createCheckoutSession);
 
   const [size, setSize] = useState<JerseySize | "">("");
   const [name, setName] = useState("HGHV");
   const [number, setNumber] = useState("45");
   const [quantity, setQuantity] = useState(1);
-
-  const [receiptOpen, setReceiptOpen] = useState(false);
-  const [wantReceipt, setWantReceipt] = useState(false);
-  const [receiptEmail, setReceiptEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [email, setEmail] = useState("");
+  const [wantReceipt, setWantReceipt] = useState(true);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const total = useMemo(() => JERSEY_PRICE * quantity, [quantity]);
 
@@ -106,69 +96,34 @@ function ProductPage() {
 
   const numberValue = number === "" ? 0 : Math.min(99, Number(number));
 
-  const openReceiptStep = () => {
+  const handleCheckout = async () => {
     if (!size) {
       toast.error("Please choose a size.");
       return;
     }
-    setReceiptOpen(true);
-  };
-
-  const orderSummaryLines = () => [
-    `Product: ${jersey.name}`,
-    `Size: ${size}`,
-    `Name on Jersey: ${name || "—"}`,
-    `Jersey Number: ${numberValue}`,
-    `Quantity: ${quantity}`,
-    `Unit Price: ${formatGBP(JERSEY_PRICE)}`,
-    `Total: ${formatGBP(total)}`,
-  ];
-
-  const submitOrder = async () => {
-    if (wantReceipt) {
-      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(receiptEmail.trim());
-      if (!valid) {
-        toast.error("Please enter a valid email for your receipt.");
-        return;
-      }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      toast.error("Please enter a valid email address.");
+      return;
     }
 
-    setSubmitting(true);
-    const summary = orderSummaryLines().join("\n");
-    const subject = `New jersey order — ${jersey.name}`;
-
+    setIsRedirecting(true);
     try {
-      if (FORMSPREE_ENDPOINT) {
-        const res = await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            _subject: subject,
-            ...(wantReceipt && receiptEmail.trim() ? { _cc: receiptEmail.trim(), email: receiptEmail.trim() } : {}),
-            Product: jersey.name,
-            Size: size,
-            "Name on Jersey": name,
-            "Jersey Number": numberValue,
-            Quantity: quantity,
-            "Unit Price": formatGBP(JERSEY_PRICE),
-            Total: formatGBP(total),
-            "Receipt requested": wantReceipt ? "Yes" : "No",
-          }),
-        });
-        if (!res.ok) throw new Error("Request failed");
-      } else {
-        const ccParam = wantReceipt && receiptEmail.trim() ? `&cc=${encodeURIComponent(receiptEmail.trim())}` : "";
-        const body = encodeURIComponent(
-          `${summary}\n\nReceipt requested: ${wantReceipt ? "Yes" : "No"}`,
-        );
-        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}${ccParam}&body=${body}`;
-      }
-      setReceiptOpen(false);
-      setConfirmed(true);
-    } catch {
-      toast.error("Something went wrong sending your order. Please try again or email us directly.");
-    } finally {
-      setSubmitting(false);
+      const { url } = await startCheckout({
+        data: {
+          slug: jersey.slug,
+          size,
+          name: name || "HGHV",
+          number: numberValue,
+          quantity,
+          email: email.trim(),
+          receiptRequested: wantReceipt,
+        },
+      });
+      window.location.href = url;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Checkout failed.";
+      toast.error(message);
+      setIsRedirecting(false);
     }
   };
 
@@ -285,21 +240,54 @@ function ProductPage() {
                   </div>
                 </div>
 
+                {/* Email */}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                {/* Receipt opt-in */}
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="receipt"
+                    checked={wantReceipt}
+                    onCheckedChange={(checked) => setWantReceipt(checked === true)}
+                  />
+                  <div className="grid gap-1 leading-none">
+                    <Label htmlFor="receipt" className="text-sm font-normal">
+                      Email me a copy of the receipt
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      We’ll also send your order details to the team from this address.
+                    </p>
+                  </div>
+                </div>
+
                 <Button
                   variant="coral"
                   size="lg"
                   className="w-full"
-                  onClick={openReceiptStep}
+                  onClick={handleCheckout}
+                  disabled={isRedirecting}
                 >
-                  <ShoppingBag className="size-5" /> Place Order — {formatGBP(total)}
+                  <CreditCard className="size-5" />
+                  {isRedirecting
+                    ? "Redirecting to Stripe…"
+                    : `Pay with Stripe — ${formatGBP(total)}`}
                 </Button>
               </div>
 
               {/* Description */}
               <div className="mt-8 space-y-3 rounded-2xl bg-secondary/30 p-5 text-sm text-muted-foreground">
                 <p>
-                  <span className="font-semibold text-primary">Note:</span> Custom jerseys are unable
-                  to be returned or exchanged as they are made to order.
+                  <span className="font-semibold text-primary">Note:</span> Custom jerseys are
+                  unable to be returned or exchanged as they are made to order.
                 </p>
                 <p>
                   For a sizing guide, please visit:{" "}
@@ -317,70 +305,6 @@ function ProductPage() {
           </div>
         </div>
       </section>
-
-      {/* Receipt / confirmation dialog */}
-      <Dialog open={receiptOpen} onOpenChange={setReceiptOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm your order</DialogTitle>
-            <DialogDescription>Review your jersey details before sending.</DialogDescription>
-          </DialogHeader>
-
-          <ul className="space-y-1 rounded-xl bg-muted/50 p-4 text-sm">
-            {orderSummaryLines().map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-
-          <div className="space-y-3">
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={wantReceipt}
-                onChange={(e) => setWantReceipt(e.target.checked)}
-                className="size-4 accent-[var(--accent)]"
-              />
-              Email me a copy of the receipt
-            </label>
-            {wantReceipt && (
-              <Input
-                type="email"
-                placeholder="you@email.com"
-                value={receiptEmail}
-                onChange={(e) => setReceiptEmail(e.target.value)}
-              />
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setReceiptOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="coral" onClick={submitOrder} disabled={submitting}>
-              {submitting ? "Sending…" : "Confirm & Send Order"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Success dialog */}
-      <Dialog open={confirmed} onOpenChange={setConfirmed}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Order sent!</DialogTitle>
-            <DialogDescription>
-              Thanks — we’ve received your jersey order and will be in touch to arrange payment and
-              delivery.
-              {wantReceipt && receiptEmail ? ` A copy has been sent to ${receiptEmail}.` : ""}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button asChild variant="coral">
-              <Link to="/shop">Back to Shop</Link>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

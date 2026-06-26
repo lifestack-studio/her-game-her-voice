@@ -32,23 +32,29 @@ The dev server runs at the URL printed in your terminal (typically http://localh
 
 ## Scripts
 
-| Command            | Description                                  |
-| ------------------ | -------------------------------------------- |
-| `bun dev`          | Start the Vite dev server                            |
-| `bun build`        | Production build (Cloudflare target by default; set `NITRO_PRESET=node-server` to emit the standalone `dist/server/index.mjs` used by Docker) |
-| `bun run build:dev`| Build in development mode                             |
-| `bun preview`      | Preview the production build locally                  |
-| `bun start`        | Run the built standalone server (`dist/server/index.mjs`) — used by the container |
-| `bun lint`         | Run ESLint                                            |
-| `bun format`       | Format all files with Prettier                       |
+| Command             | Description                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun dev`           | Start the Vite dev server                                                                                                                     |
+| `bun build`         | Production build (Cloudflare target by default; set `NITRO_PRESET=node-server` to emit the standalone `dist/server/index.mjs` used by Docker) |
+| `bun run build:dev` | Build in development mode                                                                                                                     |
+| `bun preview`       | Preview the production build locally                                                                                                          |
+| `bun start`         | Run the built standalone server (`dist/server/index.mjs`) — used by the container                                                             |
+| `bun lint`          | Run ESLint                                                                                                                                    |
+| `bun format`        | Format all files with Prettier                                                                                                                |
 
 ## Environment variables
 
 Server-only secrets are read from the environment and never exposed to the browser.
 
-| Variable          | Required | Description                                                                 |
-| ----------------- | -------- | --------------------------------------------------------------------------- |
-| `PODCAST_RSS_URL` | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
+| Variable                      | Required | Description                                                                                                                              |
+| ----------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `PODCAST_RSS_URL`             | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Yes\*    | Stripe public key (shown in the browser, safe to expose).                                                                                |
+| `STRIPE_SECRET_KEY`           | Yes\*    | Stripe secret key (server-only). Used to create Checkout sessions.                                                                       |
+| `STRIPE_WEBHOOK_SECRET`       | No       | Optional. Enables `/api/public/stripe/webhook` to receive payment events.                                                                |
+| `VITE_FORMSPREE_ENDPOINT`     | No       | Optional. Used to email order details after payment.                                                                                     |
+
+\* Required for jersey orders only. The site still works without Stripe if the shop feature is not used.
 
 For local development, place variables in a `.dev.vars` file (gitignored). For
 Docker/production, use a `.env` file (see [Deployment](#deployment-docker--hostinger-vps)).
@@ -126,6 +132,51 @@ docker compose down                           # stop and remove the container
 > is already in use. To serve a domain over HTTPS, put a reverse proxy (Hostinger's
 > Nginx Proxy Manager, Caddy, etc.) in front of `http://127.0.0.1:3000`.
 
+## Stripe checkout (jersey orders)
+
+Jersey orders use a **bring-your-own-account Stripe Checkout** flow that runs entirely on your self-hosted server. Lovable Cloud / built-in payments are not used.
+
+### 1. Get your Stripe keys
+
+1. Sign in to [Stripe](https://stripe.com) (or create an account).
+2. Switch to **Test mode** while developing.
+3. Go to **Developers → API keys**.
+4. Copy the **Publishable key** (`pk_test_…`) and **Secret key** (`sk_test_…`).
+
+### 2. Add them to the environment
+
+```text
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+Restart the container after editing `.env`.
+
+### 3. Test a payment
+
+1. Go to `/shop`, select a jersey, and fill in the customisation form.
+2. Click **Pay with Stripe**.
+3. Complete the Checkout with Stripe's test card: `4242 4242 4242 4242`, any future date, any CVC.
+4. You should be redirected to `/shop/success?session_id=…` and see an order summary.
+
+### 4. Optional: production / live mode
+
+When you’re ready to take real payments:
+
+1. Activate your Stripe account.
+2. Switch to **Live mode** and copy the live keys.
+3. Replace the test keys with the live ones in `.env` and restart the container.
+4. Stripe requires HTTPS and a real domain for live checkout sessions.
+
+### 5. Optional: webhook endpoint
+
+`/api/public/stripe/webhook` is available for Stripe to send payment events. If you configure it, Stripe can email the order to the team even if the customer closes the browser before reaching the success page.
+
+1. Add `STRIPE_WEBHOOK_SECRET` to `.env`.
+2. In the Stripe dashboard, add an endpoint pointing to:
+   `https://your-domain.com/api/public/stripe/webhook`
+3. Select the `checkout.session.completed` event.
+
 ## Project structure
 
 ```
@@ -135,16 +186,22 @@ src/
 │   ├── index.tsx        # Home page
 │   ├── about.tsx        # About / host story
 │   ├── episodes.tsx     # Episodes
-│   ├── bloopers.tsx     # Bloopers
+│   ├── behind-the-scenes.tsx # Behind the Scenes (TikTok videos)
 │   ├── shop.tsx         # Merch shop
+│   ├── shop_.$slug.tsx  # Jersey customiser + Stripe checkout
+│   ├── shop.success.tsx # Order confirmation page
 │   ├── contact.tsx      # Contact / guest & sponsor enquiries
 │   ├── sitemap[.]xml.ts # Generated sitemap
-│   └── api/podcast/
-│       └── latest.ts    # GET /api/podcast/latest — parses the RSS feed server-side
+│   ├── api/podcast/
+│   │   └── latest.ts    # GET /api/podcast/latest — parses the RSS feed server-side
+│   └── api/public/stripe/
+│       └── webhook.ts   # POST /api/public/stripe/webhook — Stripe payment events
 ├── components/          # Site components (audio-player, episode-card, site-header, …)
 │   └── ui/              # shadcn/ui primitives
 ├── hooks/               # Shared React hooks
-├── lib/                 # Utilities (cn helper, Lovable error reporting)
+├── lib/                 # Utilities, server functions, and config
+│   ├── jerseys.ts       # Jersey data & pricing
+│   └── checkout.functions.ts # Stripe Checkout session creation/verification
 ├── assets/              # Images & static media
 ├── styles.css           # Tailwind entry + theme tokens
 ├── router.tsx           # Router setup
