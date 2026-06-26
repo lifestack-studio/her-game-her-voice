@@ -32,27 +32,27 @@ The dev server runs at the URL printed in your terminal (typically http://localh
 
 ## Scripts
 
-| Command            | Description                                  |
-| ------------------ | -------------------------------------------- |
-| `bun dev`          | Start the Vite dev server                            |
-| `bun build`        | Production build (Cloudflare target by default; set `NITRO_PRESET=node-server` to emit the standalone `dist/server/index.mjs` used by Docker) |
-| `bun run build:dev`| Build in development mode                             |
-| `bun preview`      | Preview the production build locally                  |
-| `bun start`        | Run the built standalone server (`dist/server/index.mjs`) — used by the container |
-| `bun lint`         | Run ESLint                                            |
-| `bun format`       | Format all files with Prettier                       |
+| Command             | Description                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun dev`           | Start the Vite dev server                                                                                                                     |
+| `bun build`         | Production build (Cloudflare target by default; set `NITRO_PRESET=node-server` to emit the standalone `dist/server/index.mjs` used by Docker) |
+| `bun run build:dev` | Build in development mode                                                                                                                     |
+| `bun preview`       | Preview the production build locally                                                                                                          |
+| `bun start`         | Run the built standalone server (`dist/server/index.mjs`) — used by the container                                                             |
+| `bun lint`          | Run ESLint                                                                                                                                    |
+| `bun format`        | Format all files with Prettier                                                                                                                |
 
 ## Environment variables
 
 Server-only secrets are read from the environment and never exposed to the browser.
 
-| Variable                        | Required | Description                                                                 |
-| ------------------------------- | -------- | --------------------------------------------------------------------------- |
-| `PODCAST_RSS_URL`               | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
-| `VITE_STRIPE_PUBLISHABLE_KEY`   | Yes*     | Stripe public key (shown in the browser, safe to expose).                   |
-| `STRIPE_SECRET_KEY`             | Yes*     | Stripe secret key (server-only). Used to create Checkout sessions.           |
-| `STRIPE_WEBHOOK_SECRET`         | No       | Optional. Enables `/api/public/stripe/webhook` to receive payment events.    |
-| `VITE_FORMSPREE_ENDPOINT`       | No       | Optional. Used to email order details after payment.                          |
+| Variable                      | Required | Description                                                                                                                              |
+| ----------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `PODCAST_RSS_URL`             | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Yes\*    | Stripe public key (shown in the browser, safe to expose).                                                                                |
+| `STRIPE_SECRET_KEY`           | Yes\*    | Stripe secret key (server-only). Used to create Checkout sessions.                                                                       |
+| `STRIPE_WEBHOOK_SECRET`       | No       | Optional. Enables `/api/public/stripe/webhook` to receive payment events.                                                                |
+| `VITE_FORMSPREE_ENDPOINT`     | No       | Optional. Used to email order details after payment.                                                                                     |
 
 \* Required for jersey orders only. The site still works without Stripe if the shop feature is not used.
 
