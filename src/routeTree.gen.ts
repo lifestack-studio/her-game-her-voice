@@ -17,6 +17,7 @@ import { Route as BehindTheScenesRouteImport } from './routes/behind-the-scenes'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
+import { Route as ShopSuccessRouteImport } from './routes/shop.success'
 import { Route as ApiTiktokLatestRouteImport } from './routes/api/tiktok/latest'
 import { Route as ApiPodcastLatestRouteImport } from './routes/api/podcast/latest'
 import { Route as ApiTiktokAuthStartRouteImport } from './routes/api/tiktok/auth/start'
@@ -62,6 +63,11 @@ const ShopSlugRoute = ShopSlugRouteImport.update({
   path: '/shop/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopSuccessRoute = ShopSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => ShopRoute,
+} as any)
 const ApiTiktokLatestRoute = ApiTiktokLatestRouteImport.update({
   id: '/api/tiktok/latest',
   path: '/api/tiktok/latest',
@@ -89,8 +95,9 @@ export interface FileRoutesByFullPath {
   '/behind-the-scenes': typeof BehindTheScenesRoute
   '/contact': typeof ContactRoute
   '/episodes': typeof EpisodesRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/shop/success': typeof ShopSuccessRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
   '/api/tiktok/latest': typeof ApiTiktokLatestRoute
@@ -103,8 +110,9 @@ export interface FileRoutesByTo {
   '/behind-the-scenes': typeof BehindTheScenesRoute
   '/contact': typeof ContactRoute
   '/episodes': typeof EpisodesRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/shop/success': typeof ShopSuccessRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
   '/api/tiktok/latest': typeof ApiTiktokLatestRoute
@@ -118,8 +126,9 @@ export interface FileRoutesById {
   '/behind-the-scenes': typeof BehindTheScenesRoute
   '/contact': typeof ContactRoute
   '/episodes': typeof EpisodesRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/shop/success': typeof ShopSuccessRoute
   '/shop_/$slug': typeof ShopSlugRoute
   '/api/podcast/latest': typeof ApiPodcastLatestRoute
   '/api/tiktok/latest': typeof ApiTiktokLatestRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/episodes'
     | '/shop'
     | '/sitemap.xml'
+    | '/shop/success'
     | '/shop/$slug'
     | '/api/podcast/latest'
     | '/api/tiktok/latest'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/episodes'
     | '/shop'
     | '/sitemap.xml'
+    | '/shop/success'
     | '/shop/$slug'
     | '/api/podcast/latest'
     | '/api/tiktok/latest'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/episodes'
     | '/shop'
     | '/sitemap.xml'
+    | '/shop/success'
     | '/shop_/$slug'
     | '/api/podcast/latest'
     | '/api/tiktok/latest'
@@ -177,7 +189,7 @@ export interface RootRouteChildren {
   BehindTheScenesRoute: typeof BehindTheScenesRoute
   ContactRoute: typeof ContactRoute
   EpisodesRoute: typeof EpisodesRoute
-  ShopRoute: typeof ShopRoute
+  ShopRoute: typeof ShopRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ShopSlugRoute: typeof ShopSlugRoute
   ApiPodcastLatestRoute: typeof ApiPodcastLatestRoute
@@ -244,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/success': {
+      id: '/shop/success'
+      path: '/success'
+      fullPath: '/shop/success'
+      preLoaderRoute: typeof ShopSuccessRouteImport
+      parentRoute: typeof ShopRoute
+    }
     '/api/tiktok/latest': {
       id: '/api/tiktok/latest'
       path: '/api/tiktok/latest'
@@ -275,13 +294,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ShopRouteChildren {
+  ShopSuccessRoute: typeof ShopSuccessRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopSuccessRoute: ShopSuccessRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BehindTheScenesRoute: BehindTheScenesRoute,
   ContactRoute: ContactRoute,
   EpisodesRoute: EpisodesRoute,
-  ShopRoute: ShopRoute,
+  ShopRoute: ShopRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ShopSlugRoute: ShopSlugRoute,
   ApiPodcastLatestRoute: ApiPodcastLatestRoute,
