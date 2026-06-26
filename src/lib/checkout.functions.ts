@@ -23,7 +23,8 @@ const verifySchema = z.object({
   sessionId: z.string().min(1),
 });
 
-const stripeApiVersion: Stripe.LatestApiVersion = "2025-04-30.basil";
+const stripeApiVersion = "2025-04-30.basil";
+
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .inputValidator((input) => orderSchema.parse(input))
