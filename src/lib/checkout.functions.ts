@@ -23,7 +23,7 @@ const verifySchema = z.object({
   sessionId: z.string().min(1),
 });
 
-const stripeApiVersion = "2025-04-30.basil";
+const stripeApiVersion = "2026-06-24.dahlia";
 
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
