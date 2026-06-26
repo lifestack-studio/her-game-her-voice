@@ -132,6 +132,51 @@ docker compose down                           # stop and remove the container
 > is already in use. To serve a domain over HTTPS, put a reverse proxy (Hostinger's
 > Nginx Proxy Manager, Caddy, etc.) in front of `http://127.0.0.1:3000`.
 
+## Stripe checkout (jersey orders)
+
+Jersey orders use a **bring-your-own-account Stripe Checkout** flow that runs entirely on your self-hosted server. Lovable Cloud / built-in payments are not used.
+
+### 1. Get your Stripe keys
+
+1. Sign in to [Stripe](https://stripe.com) (or create an account).
+2. Switch to **Test mode** while developing.
+3. Go to **Developers → API keys**.
+4. Copy the **Publishable key** (`pk_test_…`) and **Secret key** (`sk_test_…`).
+
+### 2. Add them to the environment
+
+```text
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+Restart the container after editing `.env`.
+
+### 3. Test a payment
+
+1. Go to `/shop`, select a jersey, and fill in the customisation form.
+2. Click **Pay with Stripe**.
+3. Complete the Checkout with Stripe's test card: `4242 4242 4242 4242`, any future date, any CVC.
+4. You should be redirected to `/shop/success?session_id=…` and see an order summary.
+
+### 4. Optional: production / live mode
+
+When you’re ready to take real payments:
+
+1. Activate your Stripe account.
+2. Switch to **Live mode** and copy the live keys.
+3. Replace the test keys with the live ones in `.env` and restart the container.
+4. Stripe requires HTTPS and a real domain for live checkout sessions.
+
+### 5. Optional: webhook endpoint
+
+`/api/public/stripe/webhook` is available for Stripe to send payment events. If you configure it, Stripe can email the order to the team even if the customer closes the browser before reaching the success page.
+
+1. Add `STRIPE_WEBHOOK_SECRET` to `.env`.
+2. In the Stripe dashboard, add an endpoint pointing to:
+   `https://your-domain.com/api/public/stripe/webhook`
+3. Select the `checkout.session.completed` event.
+
 ## Project structure
 
 ```
