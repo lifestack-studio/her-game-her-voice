@@ -186,16 +186,22 @@ src/
 │   ├── index.tsx        # Home page
 │   ├── about.tsx        # About / host story
 │   ├── episodes.tsx     # Episodes
-│   ├── bloopers.tsx     # Bloopers
+│   ├── behind-the-scenes.tsx # Behind the Scenes (TikTok videos)
 │   ├── shop.tsx         # Merch shop
+│   ├── shop_.$slug.tsx  # Jersey customiser + Stripe checkout
+│   ├── shop.success.tsx # Order confirmation page
 │   ├── contact.tsx      # Contact / guest & sponsor enquiries
 │   ├── sitemap[.]xml.ts # Generated sitemap
-│   └── api/podcast/
-│       └── latest.ts    # GET /api/podcast/latest — parses the RSS feed server-side
+│   ├── api/podcast/
+│   │   └── latest.ts    # GET /api/podcast/latest — parses the RSS feed server-side
+│   └── api/public/stripe/
+│       └── webhook.ts   # POST /api/public/stripe/webhook — Stripe payment events
 ├── components/          # Site components (audio-player, episode-card, site-header, …)
 │   └── ui/              # shadcn/ui primitives
 ├── hooks/               # Shared React hooks
-├── lib/                 # Utilities (cn helper, Lovable error reporting)
+├── lib/                 # Utilities, server functions, and config
+│   ├── jerseys.ts       # Jersey data & pricing
+│   └── checkout.functions.ts # Stripe Checkout session creation/verification
 ├── assets/              # Images & static media
 ├── styles.css           # Tailwind entry + theme tokens
 ├── router.tsx           # Router setup
