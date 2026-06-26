@@ -46,9 +46,15 @@ The dev server runs at the URL printed in your terminal (typically http://localh
 
 Server-only secrets are read from the environment and never exposed to the browser.
 
-| Variable          | Required | Description                                                                 |
-| ----------------- | -------- | --------------------------------------------------------------------------- |
-| `PODCAST_RSS_URL` | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
+| Variable                        | Required | Description                                                                 |
+| ------------------------------- | -------- | --------------------------------------------------------------------------- |
+| `PODCAST_RSS_URL`               | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
+| `VITE_STRIPE_PUBLISHABLE_KEY`   | Yes*     | Stripe public key (shown in the browser, safe to expose).                   |
+| `STRIPE_SECRET_KEY`             | Yes*     | Stripe secret key (server-only). Used to create Checkout sessions.           |
+| `STRIPE_WEBHOOK_SECRET`         | No       | Optional. Enables `/api/public/stripe/webhook` to receive payment events.    |
+| `VITE_FORMSPREE_ENDPOINT`       | No       | Optional. Used to email order details after payment.                          |
+
+\* Required for jersey orders only. The site still works without Stripe if the shop feature is not used.
 
 For local development, place variables in a `.dev.vars` file (gitignored). For
 Docker/production, use a `.env` file (see [Deployment](#deployment-docker--hostinger-vps)).
