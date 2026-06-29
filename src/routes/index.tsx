@@ -85,13 +85,19 @@ function HomePage() {
       </section>
 
       {/* Mission statement */}
-      <section className="bg-background py-20 sm:py-24">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <p className="text-lg leading-relaxed text-foreground sm:text-xl">
-            Her Game, Her Voice is a podcast celebrating the women who are reshaping ice
-            hockey. Each episode features honest, in-person conversations with team captains,
-            players, and changemakers from across the UK.
-          </p>
+      <section
+        className="relative bg-cover bg-center py-20 sm:py-28"
+        style={{ backgroundImage: `url(${textBackground.url})` }}
+      >
+        <div className="absolute inset-0 bg-primary/30" aria-hidden="true" />
+        <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <div className="rounded-xl bg-background/80 px-6 py-10 shadow-lg backdrop-blur-sm sm:px-10">
+            <p className="text-lg leading-relaxed text-foreground sm:text-xl">
+              Her Game, Her Voice is a podcast celebrating the women who are reshaping ice
+              hockey. Each episode features honest, in-person conversations with team captains,
+              players, and changemakers from across the UK.
+            </p>
+          </div>
           <blockquote className="mx-auto mt-12 max-w-2xl border-l-4 border-accent bg-muted/50 px-6 py-6 text-left">
             <Quote className="mb-3 size-7 text-accent" aria-hidden="true" />
             <p className="font-display text-2xl font-medium italic leading-snug text-primary sm:text-3xl">
