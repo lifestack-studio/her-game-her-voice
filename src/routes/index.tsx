@@ -98,7 +98,7 @@ function HomePage() {
               players, and changemakers from across the UK.
             </p>
           </div>
-          <blockquote className="mx-auto mt-12 max-w-2xl border-l-4 border-accent bg-muted/50 px-6 py-6 text-left">
+          <blockquote className="mx-auto mt-12 max-w-2xl border-l-4 border-accent bg-background/80 px-6 py-6 text-left shadow-lg backdrop-blur-sm">
             <Quote className="mb-3 size-7 text-accent" aria-hidden="true" />
             <p className="font-display text-2xl font-medium italic leading-snug text-primary sm:text-3xl">
               “I got sick of being told I couldn’t play hockey because I was a girl.”
