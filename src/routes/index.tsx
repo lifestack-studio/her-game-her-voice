@@ -103,6 +103,26 @@ function HomePage() {
         </div>
       </section>
 
+      {/* YouTube banner */}
+      <section className="bg-brand-gradient">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-4 py-14 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
+          <div className="flex items-center gap-4">
+            <Youtube className="size-10 text-white" aria-hidden="true" />
+            <div>
+              <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
+                We are on YouTube Now
+              </h2>
+              <p className="mt-1 text-white/80">
+                Watch the latest episodes and clips from the show.
+              </p>
+            </div>
+          </div>
+          <Button asChild variant="onDark" size="lg">
+            <Link to="/episodes">Watch now</Link>
+          </Button>
+        </div>
+      </section>
+
       {/* Latest episodes */}
       <section className="bg-secondary/20 py-20 sm:py-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
@@ -129,26 +149,6 @@ function HomePage() {
               See All Episodes <ArrowRight className="size-4" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* YouTube banner */}
-      <section className="bg-brand-gradient">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-4 py-14 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
-          <div className="flex items-center gap-4">
-            <Youtube className="size-10 text-white" aria-hidden="true" />
-            <div>
-              <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
-                We are on YouTube Now
-              </h2>
-              <p className="mt-1 text-white/80">
-                Watch the latest episodes and clips from the show.
-              </p>
-            </div>
-          </div>
-          <Button asChild variant="onDark" size="lg">
-            <Link to="/episodes">Watch now</Link>
-          </Button>
         </div>
       </section>
 
