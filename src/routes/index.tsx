@@ -3,6 +3,7 @@ import { ArrowRight, Quote, Youtube } from "lucide-react";
 import heroAsset from "@/assets/hero.jpg.asset.json";
 import brandBanner from "@/assets/brand-banner.png";
 import textBackground from "@/assets/text-background.jpeg.asset.json";
+import emmaHeadshot from "@/assets/emma-headshot.png";
 import { Button } from "@/components/ui/button";
 import { PresentedBy } from "@/components/presented-by";
 import { LazyIframe } from "@/components/lazy-iframe";
