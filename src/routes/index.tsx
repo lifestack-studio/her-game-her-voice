@@ -106,7 +106,7 @@ function HomePage() {
       <section className="bg-secondary/20 py-14 sm:py-20">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 md:grid-cols-[280px_1fr] md:gap-16">
           <div className="mx-auto md:mx-0">
-            <div className="aspect-square w-56 overflow-hidden rounded-full border-[6px] border-secondary shadow-card sm:w-64 md:w-72">
+            <div className="aspect-square w-48 overflow-hidden rounded-full border-[6px] border-secondary shadow-card sm:w-56 md:w-64">
               <img
                 src={emmaHeadshot}
                 alt="Emma Stigter, founder and host of Her Game, Her Voice"
