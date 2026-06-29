@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Music2, Apple, RefreshCw, Youtube } from "lucide-react";
+import { Music2, Apple, RefreshCw, Youtube, Music } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { EpisodeCard } from "@/components/episode-card";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,18 @@ const platforms = [
     href: "https://podcasts.apple.com/us/podcast/her-game-her-voice/id1825002407",
     Icon: Apple,
     className: "bg-[#000000] text-white hover:brightness-125",
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/",
+    Icon: Youtube,
+    className: "bg-[#FF0000] text-white hover:brightness-110",
+  },
+  {
+    label: "Amazon Music",
+    href: "https://music.amazon.co.uk/podcasts/ce03070a-3a8d-46a5-9a1f-a54caf3b2097/her-game-her-voice",
+    Icon: Music,
+    className: "bg-[#00A8E1] text-white hover:brightness-110",
   },
 ];
 
