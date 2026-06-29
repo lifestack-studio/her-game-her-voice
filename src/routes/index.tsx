@@ -3,6 +3,7 @@ import { ArrowRight, Quote, Youtube } from "lucide-react";
 import heroAsset from "@/assets/hero.jpg.asset.json";
 import brandBanner from "@/assets/brand-banner.png";
 import textBackground from "@/assets/text-background.jpeg.asset.json";
+import emmaHeadshot from "@/assets/emma-headshot.png";
 import { Button } from "@/components/ui/button";
 import { PresentedBy } from "@/components/presented-by";
 import { LazyIframe } from "@/components/lazy-iframe";
@@ -103,8 +104,20 @@ function HomePage() {
 
       {/* Founder quote */}
       <section className="bg-secondary/20 py-14 sm:py-20">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <blockquote className="mx-auto max-w-2xl border-l-4 border-accent bg-background px-6 py-6 text-left shadow-lg">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 md:grid-cols-[280px_1fr] md:gap-16">
+          <div className="mx-auto md:mx-0">
+            <div className="aspect-square w-56 overflow-hidden rounded-full border-[6px] border-secondary shadow-card sm:w-64 md:w-72">
+              <img
+                src={emmaHeadshot}
+                alt="Emma Stigter, founder and host of Her Game, Her Voice"
+                width={800}
+                height={800}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+          <blockquote className="border-l-4 border-accent bg-background px-6 py-6 text-left shadow-lg">
             <Quote className="mb-3 size-7 text-accent" aria-hidden="true" />
             <p className="font-display text-2xl font-medium italic leading-snug text-primary sm:text-3xl">
               “I got sick of being told I couldn’t play hockey because I was a girl.”
