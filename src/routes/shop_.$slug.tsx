@@ -297,7 +297,7 @@ function ProductPage() {
                     rel="noopener noreferrer"
                     className="font-semibold text-accent hover:underline"
                   >
-                    Rhino Sports 5-Panel Pro V-Neck
+                    {SIZING_GUIDE_URL}
                   </a>
                 </p>
               </div>
