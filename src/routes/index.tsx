@@ -87,15 +87,15 @@ function HomePage() {
       </section>
 
       {/* Jersey promo strip */}
-      <section className="bg-blush">
+      <section className="bg-blush py-6 sm:py-8">
         <Link to="/shop" className="block transition-opacity duration-300 hover:opacity-95">
           <img
             src={jerseyPoster}
             alt="Limited edition HGHV jersey — Because Girls Play Hockey Too"
-            width={1900}
-            height={628}
+            width={950}
+            height={314}
             loading="lazy"
-            className="mx-auto h-auto w-full max-w-[1900px]"
+            className="mx-auto h-auto w-full max-w-[900px] px-4 sm:px-6"
           />
         </Link>
       </section>
