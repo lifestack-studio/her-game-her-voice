@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote, Youtube } from "lucide-react";
 import heroAsset from "@/assets/hero.jpg.asset.json";
 import brandBanner from "@/assets/brand-banner.png";
+import jerseyPoster from "@/assets/jersey-poster.png";
 import textBackground from "@/assets/text-background.jpeg.asset.json";
 import emmaHeadshot from "@/assets/emma-headshot.png";
 import { Button } from "@/components/ui/button";
@@ -83,6 +84,20 @@ function HomePage() {
           loading="lazy"
           className="mx-auto h-auto w-full max-w-[1900px]"
         />
+      </section>
+
+      {/* Jersey promo strip */}
+      <section className="bg-blush">
+        <Link to="/shop" className="block transition-opacity duration-300 hover:opacity-95">
+          <img
+            src={jerseyPoster}
+            alt="Limited edition HGHV jersey — Because Girls Play Hockey Too"
+            width={1900}
+            height={628}
+            loading="lazy"
+            className="mx-auto h-auto w-full max-w-[1900px]"
+          />
+        </Link>
       </section>
 
       {/* Mission statement */}
