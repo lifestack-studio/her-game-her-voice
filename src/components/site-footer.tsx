@@ -54,7 +54,6 @@ export function SiteFooter() {
               Follow the journey
             </h2>
             <div>
-              <p className="mb-3 text-sm text-white/60">Follow the journey</p>
               <ul className="flex flex-wrap gap-2">
                 {SOCIAL_LINKS.map(({ label, href, Icon }) => (
                   <li key={label}>
