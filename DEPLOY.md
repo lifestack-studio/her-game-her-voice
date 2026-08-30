@@ -29,14 +29,6 @@ Create a `.env` file in the project root. The site will not start if required se
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
-# Formspree (used by the Stripe webhook to email order details)
-VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/YOUR_FORM_ID
-
-# Lovable Cloud / Supabase (required for auth, server functions, and database)
-VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
-
 # TikTok connector (optional — only if you use the dynamic TikTok feed)
 # TIKTOK_ACCESS_TOKEN=...
 # TIKTOK_OPEN_ID=...

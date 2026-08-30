@@ -9,7 +9,6 @@ import { CONTACT_EMAIL } from "@/lib/site";
 import { verifyCheckoutSession } from "@/lib/checkout.functions";
 import { JERSEY_PRICE, getJersey } from "@/lib/jerseys";
 
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
 
 const searchSchema = z.object({
   session_id: z.string().optional(),
@@ -195,41 +194,18 @@ async function sendOrderConfirmation(metadata: Record<string, string>, amountTot
   const total = Number.isFinite(quantity) && quantity >= 1 ? JERSEY_PRICE * quantity : JERSEY_PRICE;
   const subject = `New jersey order — ${jersey?.name ?? "Custom Jersey"}`;
 
-  if (FORMSPREE_ENDPOINT) {
-    try {
-      await fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: subject,
-          ...(metadata.email ? { email: metadata.email } : {}),
-          Product: jersey?.name ?? "Custom Jersey",
-          Size: metadata.size,
-          "Name on Jersey": metadata.name,
-          "Jersey Number": metadata.number,
-          Quantity: metadata.quantity,
-          "Unit Price": formatGBP(JERSEY_PRICE),
-          Total: formatGBP(amountTotal ? amountTotal / 100 : total),
-          "Customer email": metadata.email,
-          "Receipt requested": metadata.receipt_requested,
-        }),
-      });
-    } catch {
-      // Silent failure — Stripe already recorded the order.
-    }
-  } else {
-    const body = encodeURIComponent(
-      [
-        `Product: ${jersey?.name ?? "Custom Jersey"}`,
-        `Size: ${metadata.size}`,
-        `Name on Jersey: ${metadata.name}`,
-        `Jersey Number: ${metadata.number}`,
-        `Quantity: ${metadata.quantity}`,
-        `Total: ${formatGBP(amountTotal ? amountTotal / 100 : total)}`,
-        `Customer email: ${metadata.email}`,
-        `Receipt requested: ${metadata.receipt_requested}`,
-      ].join("\n"),
-    );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${body}`;
-  }
+  const body = encodeURIComponent(
+    [
+      `Product: ${jersey?.name ?? "Custom Jersey"}`,
+      `Size: ${metadata.size}`,
+      `Name on Jersey: ${metadata.name}`,
+      `Jersey Number: ${metadata.number}`,
+      `Quantity: ${metadata.quantity}`,
+      `Total: ${formatGBP(amountTotal ? amountTotal / 100 : total)}`,
+      `Customer email: ${metadata.email}`,
+      `Receipt requested: ${metadata.receipt_requested}`,
+    ].join("\n"),
+  );
+  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${body}`;
 }
+

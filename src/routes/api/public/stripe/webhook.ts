@@ -13,7 +13,6 @@ export const Route = createFileRoute("/api/public/stripe/webhook")({
       POST: async ({ request }) => {
         const secretKey = process.env.STRIPE_SECRET_KEY;
         const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-        const formspreeEndpoint = process.env.VITE_FORMSPREE_ENDPOINT;
 
         if (!secretKey || !endpointSecret) {
           return new Response("Stripe webhook not configured", { status: 500 });
@@ -35,43 +34,27 @@ export const Route = createFileRoute("/api/public/stripe/webhook")({
         if (event.type === "checkout.session.completed") {
           const session = event.data.object as Stripe.Checkout.Session;
           const metadata = session.metadata ?? {};
+          const jersey = getJersey(metadata.slug);
+          const quantity = Number(metadata.quantity);
+          const total =
+            Number.isFinite(quantity) && quantity >= 1 ? JERSEY_PRICE * quantity : JERSEY_PRICE;
 
+          // Order details are logged here and also visible in the Stripe
+          // dashboard (Payments → session metadata).
           console.log("[stripe webhook] checkout.session.completed", {
             sessionId: session.id,
-            metadata,
+            product: jersey?.name ?? "Custom Jersey",
+            size: metadata.size,
+            nameOnJersey: metadata.name,
+            jerseyNumber: metadata.number,
+            quantity: metadata.quantity,
+            unitPrice: formatGBP(JERSEY_PRICE),
+            total: formatGBP(session.amount_total ? session.amount_total / 100 : total),
+            customerEmail: metadata.email,
+            receiptRequested: metadata.receipt_requested,
           });
-
-          if (formspreeEndpoint) {
-            const jersey = getJersey(metadata.slug);
-            const quantity = Number(metadata.quantity);
-            const total =
-              Number.isFinite(quantity) && quantity >= 1 ? JERSEY_PRICE * quantity : JERSEY_PRICE;
-            const subject = `New jersey order — ${jersey?.name ?? "Custom Jersey"}`;
-
-            try {
-              await fetch(formspreeEndpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", Accept: "application/json" },
-                body: JSON.stringify({
-                  _subject: subject,
-                  ...(metadata.email ? { email: metadata.email } : {}),
-                  Product: jersey?.name ?? "Custom Jersey",
-                  Size: metadata.size,
-                  "Name on Jersey": metadata.name,
-                  "Jersey Number": metadata.number,
-                  Quantity: metadata.quantity,
-                  "Unit Price": formatGBP(JERSEY_PRICE),
-                  Total: formatGBP(session.amount_total ? session.amount_total / 100 : total),
-                  "Customer email": metadata.email,
-                  "Receipt requested": metadata.receipt_requested,
-                  "Stripe session id": session.id,
-                }),
-              });
-            } catch (err) {
-              console.error("[stripe webhook] failed to send order email", err);
-            }
-          }
         }
+
 
         return new Response("OK", { status: 200 });
       },
