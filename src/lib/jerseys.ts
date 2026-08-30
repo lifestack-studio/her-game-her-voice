@@ -12,7 +12,7 @@ export type Jersey = {
 };
 
 export const JERSEYS: Jersey[] = [
-  { slug: "home", name: "Home Jersey — Navy", image: jerseyHome },
+  { slug: "home", name: "Limited Edition HGHV Jersey — Season 2", image: jerseyHome },
 ];
 
 export function getJersey(slug: string): Jersey | undefined {
