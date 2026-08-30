@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Mail } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Logo } from "@/components/logo";
 import { Logo } from "@/components/logo";
 import { NAV_LINKS, SOCIAL_LINKS, CONTACT_EMAIL } from "@/lib/site";
 import ehHockey from "@/assets/eh-hockey-repair-shop.png.asset.json";
