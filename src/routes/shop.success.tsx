@@ -9,7 +9,6 @@ import { CONTACT_EMAIL } from "@/lib/site";
 import { verifyCheckoutSession } from "@/lib/checkout.functions";
 import { JERSEY_PRICE, getJersey } from "@/lib/jerseys";
 
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
 
 const searchSchema = z.object({
   session_id: z.string().optional(),
