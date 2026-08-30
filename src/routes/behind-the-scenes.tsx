@@ -4,6 +4,7 @@ import { Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
 import { LazyIframe } from "@/components/lazy-iframe";
+import { apiUrl } from "@/lib/api-url";
 
 /**
  * Fallback clips shown before the TikTok account is connected, or if the
@@ -34,7 +35,7 @@ interface LatestTikTokVideo {
 const videosQueryOptions = queryOptions<LatestTikTokVideo[]>({
   queryKey: ["tiktok", "latest"],
   queryFn: async () => {
-    const res = await fetch("/api/tiktok/latest");
+    const res = await fetch(apiUrl("/api/tiktok/latest"));
     if (!res.ok) throw new Error("Failed to load TikTok videos");
     return (await res.json()) as LatestTikTokVideo[];
   },

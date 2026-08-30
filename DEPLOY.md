@@ -1,154 +1,161 @@
-# Self-hosting Her Game, Her Voice on Hostinger VPS (Docker)
+# Deploying Her Game, Her Voice
 
-This guide packages the TanStack Start site as a Docker container using the **Nitro `node-server` preset**, which produces a standalone Node.js server.
+The site runs as a Docker container on a Hostinger VPS, behind **Traefik**,
+which terminates TLS and routes by hostname. The image is built by GitHub
+Actions and published to GHCR; the VPS only ever **pulls**.
 
-## 1. Get the source code
+> Nothing is built on the VPS. It is a shared box running many unrelated
+> containers, and a Vite build there would compete with all of them for RAM.
 
-### Option A — GitHub (recommended)
-1. In the Lovable editor, click **Plus (+) → GitHub** and connect your repository.
-2. Clone it locally or directly onto your VPS:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-   cd YOUR_REPO
-   ```
+## Topology
 
-### Option B — Download ZIP
-1. In the Lovable editor, open the **Project menu → Download as ZIP**.
-2. Upload and unzip the archive on your VPS:
-   ```bash
-   unzip hghv-site.zip -d hghv-site
-   cd hghv-site
-   ```
+| | |
+|---|---|
+| Host | `168.231.115.10` (`srv838476`, Ubuntu 24.04, x86_64) |
+| Compose project | `/docker/her-game-her-voice/docker-compose.yml` |
+| Service / container | `web` / `her-game-her-voice-web-1` |
+| Image | `ghcr.io/lifestack-studio/her-game-her-voice:latest` |
+| Reverse proxy | Traefik on the external network `root_traefik-net` |
+| TLS | Traefik certresolver `mytlschallenge` (no certbot, no nginx) |
+| App port | `3000`, internal only — no host port is published |
 
-## 2. Required environment variables
+Routing and TLS are declared as **labels in the compose file**, not in any
+Traefik config file. Both `hergamehervoice.co.uk` and `www.` are matched, and
+plain HTTP is redirected to HTTPS by the `hergamehervoice-https` middleware.
 
-Create a `.env` file in the project root. The site will not start if required secrets are missing.
+## Normal deploy
 
-```bash
-# Stripe (required for jersey checkout)
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-
-# TikTok connector (optional — only if you use the dynamic TikTok feed)
-# TIKTOK_ACCESS_TOKEN=...
-# TIKTOK_OPEN_ID=...
-```
-
-> **Security:** keep `.env` out of Git. It is already ignored by `.dockerignore` and `.gitignore`.
-
-## 3. Build and run locally (test first)
+Push to `main`. GitHub Actions (`.github/workflows/docker-publish.yml`) builds
+the image and pushes `:latest` to GHCR. Then, on the VPS:
 
 ```bash
-# Build the image
-docker build -t hghv-site .
-
-# Run it
-docker run -p 3000:3000 --env-file .env hghv-site
+ssh root@168.231.115.10
+cd /docker/her-game-her-voice
+docker compose pull && docker compose up -d
 ```
 
-Open `http://localhost:3000`. You should see the site.
-
-## 4. Deploy on Hostinger VPS
-
-### A. Prepare the VPS
-1. Log in to your Hostinger VPS.
-2. Install Docker and Docker Compose:
-   ```bash
-   sudo apt update
-   sudo apt install -y docker.io docker-compose-plugin
-   sudo systemctl enable --now docker
-   ```
-
-### B. Upload the project
-Use `scp`, `rsync`, or Hostinger’s file manager to upload the project folder to `/opt/hghv-site`.
+Or as a one-liner from your machine:
 
 ```bash
-rsync -avz --exclude=node_modules --exclude=dist --exclude=.git ./ root@YOUR_VPS_IP:/opt/hghv-site/
+ssh root@168.231.115.10 'cd /docker/her-game-her-voice && docker compose pull && docker compose up -d'
 ```
 
-### C. Create the environment file on the server
-SSH into the VPS and create `/opt/hghv-site/.env` with the same variables from step 2.
+Expect a few seconds during which Traefik returns 502 while the container swaps.
+
+### Always leave yourself a rollback
+
+Before pulling, tag whatever is currently running:
 
 ```bash
-ssh root@YOUR_VPS_IP
-nano /opt/hghv-site/.env
+ssh root@168.231.115.10 '
+  docker tag ghcr.io/lifestack-studio/her-game-her-voice:latest \
+             ghcr.io/lifestack-studio/her-game-her-voice:rollback-$(date +%Y%m%d)'
 ```
 
-### D. Start the container
-```bash
-cd /opt/hghv-site
-docker compose up -d --build
-```
-
-The site will be available on the VPS at `http://YOUR_VPS_IP:3000`.
-
-### E. Reverse proxy with Nginx (so it serves on port 443/80)
-Create `/etc/nginx/sites-available/hghv`:
-
-```nginx
-server {
-    listen 80;
-    server_name hergamehervoice.co.uk www.hergamehervoice.co.uk;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-Enable it:
-```bash
-ln -s /etc/nginx/sites-available/hghv /etc/nginx/sites-enabled/hghv
-nginx -t
-systemctl restart nginx
-```
-
-### F. HTTPS with Certbot
-```bash
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d hergamehervoice.co.uk -d www.hergamehervoice.co.uk
-```
-
-## 5. Updating the site
-
-When you make changes in Lovable:
-
-1. Pull the latest code (if using GitHub):
-   ```bash
-   cd /opt/hghv-site
-   git pull
-   ```
-2. Rebuild and restart the container:
-   ```bash
-   docker compose up -d --build
-   ```
-
-## 6. Useful commands
+To roll back, retag and recreate:
 
 ```bash
-# View logs
-docker compose logs -f
-
-# Restart
-docker compose restart
-
-# Stop
-docker compose down
-
-# Free space by removing old images
-docker system prune -f
+ssh root@168.231.115.10 '
+  docker tag ghcr.io/lifestack-studio/her-game-her-voice:rollback-YYYYMMDD \
+             ghcr.io/lifestack-studio/her-game-her-voice:latest
+  cd /docker/her-game-her-voice && docker compose up -d'
 ```
 
-## 7. Notes
+## Deploying without GitHub
 
-- The Docker build uses `NITRO_PRESET=node-server` so the output is a standalone Node server at `dist/server/index.mjs`.
-- The image exposes port `3000`. Nginx handles ports 80/443.
-- Webhook endpoints (e.g., Stripe) are served under `/api/public/stripe/webhook`, which works without extra routing rules.
+To ship a local build straight to the VPS — useful when testing a fix before
+committing. **Build for `linux/amd64`**: the VPS is x86_64, and
+`package-lock.json` only carries `linux-x64` variants of the native
+`lightningcss` and `@tailwindcss/oxide` binaries, so an arm64 build fails.
+
+```bash
+docker build --platform linux/amd64 --provenance=false --sbom=false \
+  -t hghv-site:deploy .
+
+docker save hghv-site:deploy | gzip -1 \
+  | ssh root@168.231.115.10 'gunzip | docker load'
+
+ssh root@168.231.115.10 '
+  docker tag hghv-site:deploy ghcr.io/lifestack-studio/her-game-her-voice:latest
+  cd /docker/her-game-her-voice && docker compose up -d'
+```
+
+Note this leaves GHCR and the VPS out of sync until the next `main` build. Run
+`docker compose pull && docker compose up -d` afterwards to resync.
+
+## Configuration
+
+Environment variables are set **inline in the compose file**, under
+`services.web.environment`. The adjacent `.env` is empty and unused.
+
+Currently set:
+
+```yaml
+NODE_ENV: production
+PORT: "3000"
+HOST: "0.0.0.0"
+PODCAST_RSS_URL: "https://anchor.fm/s/106fb9ee0/podcast/rss"
+```
+
+Optional additions, all read at **runtime** — adding one needs only
+`docker compose up -d`, never a rebuild:
+
+| Variable | Enables | Without it |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | Jersey checkout | `/shop` renders; checkout throws a clear "Stripe is not configured" error |
+| `STRIPE_WEBHOOK_SECRET` | Verified Stripe webhooks at `/api/public/stripe/webhook` | Webhook events are not verified |
+| `TIKTOK_*` / `LOVABLE_API_KEY` | Live TikTok feed on `/behind-the-scenes` | Falls back to hardcoded clips |
+
+See `.env.example` for the full list and `TIKTOK_SETUP.md` for the TikTok flows.
+
+## Images must be real files, never Lovable stubs
+
+Images added through the Lovable editor are exported as
+`src/assets/<name>.<ext>.asset.json` pointer stubs whose `url` resolves to
+`/__l5e/assets-v1/...` — a path **only Lovable's own hosting serves**. Self
+hosted, every one of them 404s.
+
+After any Lovable re-export, check:
+
+```bash
+grep -rn 'asset\.json' src/
+```
+
+Any hit must be resolved before deploying: download the real binary from
+`https://<project_id>.lovableproject.com<url>` (both fields are inside the
+stub; verify the bytes match its `size`), save it under the stub's base
+filename, delete the stub, and change the import to drop both the
+`.asset.json` suffix and the `.url` property access. `src/components/site-header.tsx`
+shows the correct direct-import pattern.
+
+`.dockerignore` contains `**/*.asset.json`, so a stub that survives into a
+build will fail it loudly rather than silently shipping a 404.
+
+## Build notes
+
+- The Dockerfile builds with `NITRO_PRESET=node-server`, which emits a
+  standalone server to **`.output/`** — not `dist/`. The comment in
+  `vite.config.ts` claiming `dist/server/index.mjs` is stale.
+- The runner stage must copy the **whole** `.output` tree; Nitro externalises
+  some dependencies into `.output/server/node_modules`.
+- Nitro 3 reads `PORT`/`HOST`; `NITRO_PORT`/`NITRO_HOST` are set too for
+  compatibility.
+
+## Health checks
+
+```bash
+# container state
+ssh root@168.231.115.10 'docker ps --filter name=her-game-her-voice-web-1'
+
+# logs
+ssh root@168.231.115.10 'docker logs -f her-game-her-voice-web-1'
+
+# from outside
+curl -sS -o /dev/null -w '%{http_code}\n' https://hergamehervoice.co.uk/
+```
+
+A good post-deploy check is that no Lovable CDN references survived:
+
+```bash
+curl -sS https://hergamehervoice.co.uk/ | grep -c '__l5e'   # expect 0
+```

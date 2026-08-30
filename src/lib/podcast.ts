@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api-url";
 
 /** A single podcast episode as returned by GET /api/podcast/latest (RSS-powered). */
 export interface Episode {
@@ -22,7 +23,7 @@ export interface Episode {
  * for any backend that honours the same contract.
  */
 export async function fetchLatestEpisodes(): Promise<Episode[]> {
-  const res = await fetch("/api/podcast/latest", {
+  const res = await fetch(apiUrl("/api/podcast/latest"), {
     headers: { Accept: "application/json" },
   });
 
