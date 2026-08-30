@@ -1,66 +1,59 @@
-# syntax=docker/dockerfile:1
+# Multi-stage Dockerfile for Her Game, Her Voice (TanStack Start + Nitro node-server)
+# Build: docker build -t hghv-site .
+# Run:  docker run -p 3000:3000 --env-file .env hghv-site
 
-###############################################################################
-# Her Game, Her Voice — TanStack Start (SSR) production image
-#
-# Built and published as a public container image (GHCR) by CI; the VPS pulls
-# the image rather than building locally. The app is compiled with Nitro's
-# "node-server" preset (via NITRO_PRESET, which vite.config.ts forwards to
-# Nitro) into a fully self-contained bundle at dist/server/index.mjs that runs
-# on Bun and needs no node_modules at runtime.
-###############################################################################
-
-FROM oven/bun:1.1.38-slim AS base
+# ------------------------------------------------------------------
+# Stage 1: dependencies
+# ------------------------------------------------------------------
+FROM node:20-alpine AS deps
 WORKDIR /app
 
-# ---- Dependencies (cached layer) ------------------------------------------
-FROM base AS deps
-COPY package.json bun.lock bunfig.toml ./
-# patches/ holds the bun patch for @tanstack/router-generator (idempotent route-
-# tree write) — must be present before install so the patch is applied.
-COPY patches/ ./patches/
-RUN bun install --frozen-lockfile
+# Install build tools needed for some native deps (if any)
+RUN apk add --no-cache libc6-compat python3 make g++
 
-# ---- Build -----------------------------------------------------------------
-FROM base AS build
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* bun.lockb* ./
+
+# Install with the lockfile available in your repo (npm/pnpm/yarn/bun)
+# Fallback to npm install if no lockfile is present.
+RUN if [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm i --frozen-lockfile; \
+    elif [ -f yarn.lock ]; then npm install -g yarn && yarn install --frozen-lockfile; \
+    elif [ -f bun.lockb ]; then npm install -g bun && bun install; \
+    else npm install; fi
+
+# ------------------------------------------------------------------
+# Stage 2: build the app with Nitro node-server preset
+# ------------------------------------------------------------------
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Bring installed node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NODE_ENV=production
-# REQUIRED: TanStack Start + Nitro only emit a standalone server when a preset
-# is set. Without this, no server entry is produced and there is nothing to run.
-# node-server binds PORT/HOST and serves SSR + API routes.
+
+# Force Nitro to emit a standalone Node server instead of the Cloudflare preset.
 ENV NITRO_PRESET=node-server
-# The Nitro node-server output lands in dist/ (Lovable's output override) on some
-# environments and in .output/ (Nitro's default) on others — notably the Linux CI
-# builder differs from local. Normalize whichever one has the server entry into a
-# fixed /app/server-bundle so the runtime stage is deterministic.
-RUN bun run build && \
-    if [ -f dist/server/index.mjs ]; then cp -r dist /app/server-bundle; \
-    elif [ -f .output/server/index.mjs ]; then cp -r .output /app/server-bundle; \
-    else echo "ERROR: no node-server build output (looked for dist/ and .output/)"; ls -la; exit 1; fi
-
-# ---- Runtime ---------------------------------------------------------------
-FROM oven/bun:1.1.38-slim AS runner
-WORKDIR /app
 ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOST=0.0.0.0
 
-# The Nitro output is self-contained: only the server bundle plus package.json
-# (for the `start` script) are needed — no node_modules at runtime. The build
-# stage normalized the bundle to /app/server-bundle; mount it at ./dist so the
-# `start` script (bun ./dist/server/index.mjs) resolves.
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/server-bundle ./dist
+RUN npm run build
 
-# Drop privileges — the oven/bun image ships a non-root `bun` user.
-USER bun
+# ------------------------------------------------------------------
+# Stage 3: production runtime
+# ------------------------------------------------------------------
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NITRO_PORT=3000
+ENV NITRO_HOST=0.0.0.0
+
+# Copy only the standalone server output and required static assets
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./package.json
+
+# Runtime secrets are injected via --env-file or -e at run time.
+# Do NOT commit real secrets into this image.
 
 EXPOSE 3000
 
-# Health: the runtime is Bun, which provides global fetch.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD bun -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-
-# `start` => bun ./dist/server/index.mjs (see package.json)
-CMD ["bun", "run", "start"]
+CMD ["node", "./dist/server/index.mjs"]
