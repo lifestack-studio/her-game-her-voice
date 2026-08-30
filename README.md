@@ -52,7 +52,6 @@ Server-only secrets are read from the environment and never exposed to the brows
 | `VITE_STRIPE_PUBLISHABLE_KEY` | Yes\*    | Stripe public key (shown in the browser, safe to expose).                                                                                |
 | `STRIPE_SECRET_KEY`           | Yes\*    | Stripe secret key (server-only). Used to create Checkout sessions.                                                                       |
 | `STRIPE_WEBHOOK_SECRET`       | No       | Optional. Enables `/api/public/stripe/webhook` to receive payment events.                                                                |
-| `VITE_FORMSPREE_ENDPOINT`     | No       | Optional. Used to email order details after payment.                                                                                     |
 
 \* Required for jersey orders only. The site still works without Stripe if the shop feature is not used.
 
