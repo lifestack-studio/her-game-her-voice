@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
@@ -9,6 +10,10 @@ import { verifyCheckoutSession } from "@/lib/checkout.functions";
 import { JERSEY_PRICE, getJersey } from "@/lib/jerseys";
 
 const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
+
+const searchSchema = z.object({
+  session_id: z.string().optional(),
+});
 
 const formatGBP = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
