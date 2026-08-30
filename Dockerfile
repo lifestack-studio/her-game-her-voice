@@ -45,10 +45,12 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NITRO_PORT=3000
+ENV PORT=3000
 ENV NITRO_HOST=0.0.0.0
+ENV HOST=0.0.0.0
 
 # Copy only the standalone server output and required static assets
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./package.json
 
 # Runtime secrets are injected via --env-file or -e at run time.
@@ -56,4 +58,4 @@ COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["node", "./dist/server/index.mjs"]
+CMD ["node", "./.output/server/index.mjs"]

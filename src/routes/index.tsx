@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Quote, Youtube } from "lucide-react";
-import heroAsset from "@/assets/hero.jpg.asset.json";
+import heroAsset from "@/assets/hero.jpg";
 import brandBanner from "@/assets/brand-banner.png";
 import jerseyPoster from "@/assets/jersey-poster.png";
-import textBackground from "@/assets/text-background.jpeg.asset.json";
+import textBackground from "@/assets/text-background.jpeg";
 import emmaHeadshot from "@/assets/emma-headshot.png";
 import { Button } from "@/components/ui/button";
 import { PresentedBy } from "@/components/presented-by";
@@ -41,7 +41,7 @@ function HomePage() {
       {/* Hero */}
       <section className="relative flex min-h-[60vh] items-center overflow-hidden md:min-h-[80vh]">
         <img
-          src={heroAsset.url}
+          src={heroAsset}
           alt="Women's ice hockey players in action on the rink"
           width={1920}
           height={1080}
@@ -103,7 +103,7 @@ function HomePage() {
       {/* Mission statement */}
       <section
         className="relative bg-cover bg-center py-20 sm:py-28"
-        style={{ backgroundImage: `url(${textBackground.url})` }}
+        style={{ backgroundImage: `url(${textBackground})` }}
       >
         <div className="absolute inset-0 bg-primary/30" aria-hidden="true" />
         <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
