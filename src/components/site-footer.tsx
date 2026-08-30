@@ -2,14 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { Mail } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { NAV_LINKS, SOCIAL_LINKS, CONTACT_EMAIL } from "@/lib/site";
-import ehHockey from "@/assets/eh-hockey-repair-shop.png.asset.json";
-import lmCatering from "@/assets/lm-catering.png.asset.json";
-import lifestackWhite from "@/assets/lifestack-white.png.asset.json";
+import ehHockey from "@/assets/eh-hockey-repair-shop.png";
+import lmCatering from "@/assets/lm-catering.png";
+import lifestackWhite from "@/assets/lifestack-white.png";
 
 const SPONSORS = [
-  { name: "lifestack", src: lifestackWhite.url, href: "https://lifestack.studio" },
-  { name: "Eh! Hockey Repair Shop", src: ehHockey.url, href: "https://www.ehhockey.co.uk/" },
-  { name: "L&M Catering", src: lmCatering.url, href: "https://landmcatering.wixsite.com/landmcatering" },
+  { name: "lifestack", src: lifestackWhite, href: "https://lifestack.studio" },
+  { name: "Eh! Hockey Repair Shop", src: ehHockey, href: "https://www.ehhockey.co.uk/" },
+  { name: "L&M Catering", src: lmCatering, href: "https://landmcatering.wixsite.com/landmcatering" },
 ];
 
 export function SiteFooter() {
