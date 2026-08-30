@@ -19,6 +19,7 @@ const formatGBP = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 
 export const Route = createFileRoute("/shop/success")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: "Order Confirmation | Her Game, Her Voice" },
