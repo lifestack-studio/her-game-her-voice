@@ -13,19 +13,6 @@ const SPONSORS = [
 ];
 
 export function SiteFooter() {
-  const [email, setEmail] = useState("");
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-    if (!valid) {
-      toast.error("Please enter a valid email address.");
-      return;
-    }
-    toast.success("Thanks for subscribing! Watch your inbox for updates.");
-    setEmail("");
-  };
-
   return (
     <footer className="bg-navy-gradient text-white">
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
