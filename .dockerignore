@@ -1,36 +1,41 @@
-# Build artifacts & deps (rebuilt inside the image)
+# Dependencies
 node_modules
+.pnpm-store
+
+# Build output
 dist
-dist-ssr
 .output
 .nitro
-.vinxi
-.tanstack
 
-# VCS & tooling
+# Git / editor
 .git
 .gitignore
-.lovable
+.editorconfig
 .vscode
 .idea
 
-# Cloudflare / Wrangler (unused for self-hosting)
-.wrangler
-.dev.vars
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Local env & secrets — never bake into the image
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment secrets — never copy these into the image
 .env
 .env.local
 .env.*.local
 
-# Logs & OS cruft
-*.log
-npm-debug.log*
-.DS_Store
-tsconfig.tsbuildinfo
+# Lovable / local tooling
+.lovable
+.asset.json
+*.asset.json
 
-# Docker & docs (not needed in the build context)
+# Docker files themselves (optional, but keeps context small)
 Dockerfile
-.dockerignore
 docker-compose.yml
-README.md
+.dockerignore
