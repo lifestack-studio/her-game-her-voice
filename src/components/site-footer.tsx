@@ -51,25 +51,8 @@ export function SiteFooter() {
 
           <div className="space-y-4">
             <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-white/60">
-              Stay in the loop
+              Follow the journey
             </h2>
-            <form onSubmit={handleSubscribe} className="flex gap-2">
-              <label htmlFor="newsletter-email" className="sr-only">
-                Email address
-              </label>
-              <Input
-                id="newsletter-email"
-                type="email"
-                placeholder="you@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-              />
-              <Button type="submit" variant="onDark">
-                Subscribe
-              </Button>
-            </form>
-
             <div>
               <p className="mb-3 text-sm text-white/60">Follow the journey</p>
               <ul className="flex flex-wrap gap-2">
