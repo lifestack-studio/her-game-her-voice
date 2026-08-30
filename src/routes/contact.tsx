@@ -64,8 +64,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
-
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
@@ -75,31 +73,8 @@ function ContactPage() {
   });
 
   const onSubmit = async (values: FormValues) => {
-    // If a Formspree endpoint is configured, submit to it. Otherwise fall back
-    // to a prefilled mailto so the site is fully functional without a key.
-    if (FORMSPREE_ENDPOINT) {
-      try {
-        const res = await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            name: values.name,
-            email: values.email,
-            "Enquiry Type": values.enquiryType,
-            message: values.message,
-            _subject: `New ${values.enquiryType} — Her Game, Her Voice`,
-          }),
-        });
-        if (!res.ok) throw new Error("Request failed");
-        setSubmitted(true);
-        form.reset();
-      } catch {
-        toast.error("Something went wrong sending your message. Please try again or email us directly.");
-      }
-      return;
-    }
-
-    // Fallback: open the user's email client prefilled.
+    // Opens the visitor's email client with the enquiry prefilled — no
+    // third-party form service required.
     const body = encodeURIComponent(
       `Name: ${values.name}\nEmail: ${values.email}\nEnquiry: ${values.enquiryType}\n\n${values.message}`,
     );
@@ -109,6 +84,7 @@ function ContactPage() {
     setSubmitted(true);
     form.reset();
   };
+
 
   return (
     <>
