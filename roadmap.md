@@ -8,11 +8,12 @@
 - Webhook records the delivery address alongside the order details.
 
 ## In progress
-- Add the webhook signing secret (`whsec_...`) once the endpoint
-  `https://hergamehervoice.co.uk/api/public/stripe/webhook` is created in Stripe.
+- Webhook signing secret saved here for the Lovable preview. Still needs copying into the
+  VPS `.env` as `STRIPE_WEBHOOK_SECRET`.
 - Order notification email: blocked until an email domain is configured for the project
   (nothing in the workspace yet). Once verified, scaffold the templates and send a summary
   from the webhook.
+
 
 ## Open
 - Live VPS still returns "Stripe webhook not configured" — `STRIPE_SECRET_KEY` and
