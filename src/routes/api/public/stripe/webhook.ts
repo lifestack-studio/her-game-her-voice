@@ -52,7 +52,13 @@ export const Route = createFileRoute("/api/public/stripe/webhook")({
           // dashboard (Payments → session metadata).
           console.log("[stripe webhook] checkout.session.completed", {
             sessionId: session.id,
-...
+            product: jersey?.name ?? "Custom Jersey",
+            size: metadata.size,
+            nameOnJersey: metadata.name,
+            jerseyNumber: metadata.number,
+            quantity: metadata.quantity,
+            unitPrice: formatGBP(JERSEY_PRICE),
+            total: formatGBP(session.amount_total ? session.amount_total / 100 : total),
             customerEmail: metadata.email,
             receiptRequested: metadata.receipt_requested,
             deliveryAddress: formatDelivery(session),
