@@ -7,6 +7,15 @@ const stripeApiVersion = "2026-06-24.dahlia";
 const formatGBP = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 
+const formatDelivery = (session: Stripe.Checkout.Session) => {
+  const address = session.shipping?.address;
+  if (!address) return "Not provided";
+  const line = [address.line1, address.line2, address.city, address.state, address.postal_code, address.country]
+    .filter(Boolean)
+    .join(", ");
+  return `${session.shipping?.name ? `${session.shipping.name}, ` : ""}${line}`;
+};
+
 export const Route = createFileRoute("/api/public/stripe/webhook")({
   server: {
     handlers: {
@@ -52,6 +61,7 @@ export const Route = createFileRoute("/api/public/stripe/webhook")({
             total: formatGBP(session.amount_total ? session.amount_total / 100 : total),
             customerEmail: metadata.email,
             receiptRequested: metadata.receipt_requested,
+            deliveryAddress: formatDelivery(session),
           });
         }
 

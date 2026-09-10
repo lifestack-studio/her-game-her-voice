@@ -25,6 +25,10 @@ const verifySchema = z.object({
 
 const stripeApiVersion = "2026-06-24.dahlia";
 
+// Countries Stripe's payment page will accept a delivery address for.
+const SHIPPING_COUNTRIES: Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry[] =
+  ["GB", "IE", "US", "CA", "AU", "NZ"];
+
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .inputValidator((input) => orderSchema.parse(input))
   .handler(async ({ data }) => {
@@ -68,6 +72,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         receipt_requested: String(data.receiptRequested),
       },
       customer_email: data.email,
+      shipping_address_collection: { allowed_countries: SHIPPING_COUNTRIES },
       success_url: `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/shop/${data.slug}`,
       automatic_tax: { enabled: false },
