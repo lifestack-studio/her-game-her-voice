@@ -49,7 +49,6 @@ Server-only secrets are read from the environment and never exposed to the brows
 | Variable                      | Required | Description                                                                                                                              |
 | ----------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `PODCAST_RSS_URL`             | Yes      | The show's RSS feed URL. Powers `/api/podcast/latest`, which returns the 3 most recent episodes. Without it the endpoint responds `503`. |
-| `VITE_STRIPE_PUBLISHABLE_KEY` | Yes\*    | Stripe public key (shown in the browser, safe to expose).                                                                                |
 | `STRIPE_SECRET_KEY`           | Yes\*    | Stripe secret key (server-only). Used to create Checkout sessions.                                                                       |
 | `STRIPE_WEBHOOK_SECRET`       | No       | Optional. Enables `/api/public/stripe/webhook` to receive payment events.                                                                |
 
@@ -140,13 +139,13 @@ Jersey orders use a **bring-your-own-account Stripe Checkout** flow that runs en
 1. Sign in to [Stripe](https://stripe.com) (or create an account).
 2. Switch to **Test mode** while developing.
 3. Go to **Developers → API keys**.
-4. Copy the **Publishable key** (`pk_test_…`) and **Secret key** (`sk_test_…`).
+4. Copy the **Secret key** (`sk_test_…`). The publishable key is not needed — payment
+   happens on Stripe's own hosted page, so the browser never talks to Stripe directly.
 
 ### 2. Add them to the environment
 
 ```text
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_SECRET_KEY=sk_test...
 ```
 
 Restart the container after editing `.env`.
