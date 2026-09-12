@@ -93,7 +93,7 @@ function ShopPage() {
           </p>
           <Button asChild variant="coral" size="xl">
             <a href={SHOP_URL} target="_blank" rel="noopener noreferrer">
-              Visit Our Shop
+              Coming Soon!
             </a>
           </Button>
         </div>
