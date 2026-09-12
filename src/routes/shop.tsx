@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/page-hero";
-import { SHOP_URL } from "@/lib/site";
+
 import { JERSEYS } from "@/lib/jerseys";
 
 export const Route = createFileRoute("/shop")({
