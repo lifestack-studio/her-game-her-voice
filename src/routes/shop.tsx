@@ -91,10 +91,8 @@ function ShopPage() {
           <p className="max-w-2xl text-lg text-primary/80">
             Browse our full range of merchandise including hoodies, caps, and accessories.
           </p>
-          <Button asChild variant="coral" size="xl">
-            <a href={SHOP_URL} target="_blank" rel="noopener noreferrer">
-              Coming Soon!
-            </a>
+          <Button variant="coral" size="xl" disabled aria-disabled="true">
+            Coming Soon!
           </Button>
         </div>
       </section>
