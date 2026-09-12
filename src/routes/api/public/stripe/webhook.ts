@@ -8,12 +8,15 @@ const formatGBP = (value: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
 
 const formatDelivery = (session: Stripe.Checkout.Session) => {
-  const address = session.shipping?.address;
-  if (!address) return "Not provided";
+  // Stripe returns the address collected by `shipping_address_collection`
+  // under `collected_information`, not on a top-level `shipping` field.
+  const shipping = session.collected_information?.shipping_details;
+  if (!shipping) return "Not provided";
+  const { address } = shipping;
   const line = [address.line1, address.line2, address.city, address.state, address.postal_code, address.country]
     .filter(Boolean)
     .join(", ");
-  return `${session.shipping?.name ? `${session.shipping.name}, ` : ""}${line}`;
+  return `${shipping.name ? `${shipping.name}, ` : ""}${line}`;
 };
 
 export const Route = createFileRoute("/api/public/stripe/webhook")({
